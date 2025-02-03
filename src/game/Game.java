@@ -18,7 +18,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * Your main game entry point
  */
 public class Game {
-
+    private KeyHandler keyHandler;
+    private PlayerController playerController;
 
     /** Initialise a new Game. */
     public Game() {
@@ -33,6 +34,10 @@ public class Game {
 
 
         Player character = new Player(world, new Vec2(0, -8));
+        keyHandler = new KeyHandler();
+        playerController = new PlayerController(character, keyHandler);
+        world.addStepListener(playerController);
+        
         Trampoline trampoline = new Trampoline(world, ground);
 
         // // Make a walker
@@ -46,6 +51,7 @@ public class Game {
 
         // Make a view to look into the game world
         UserView view = new UserView(world, 800, 600);
+        view.addKeyListener(keyHandler);
 
 
         //optional: draw a 1-metre grid over the view
@@ -65,8 +71,11 @@ public class Game {
         frame.pack();
         frame.setVisible(true);
 
+        view.setFocusable(true);
+        view.requestFocus();
+
         //optional: uncomment this to make a debugging view
-         JFrame debugView = new DebugViewer(world, 500, 500);
+         //JFrame debugView = new DebugViewer(world, 500, 500);
 
         // start our game world simulation!
         world.start();

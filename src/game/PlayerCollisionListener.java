@@ -19,7 +19,7 @@ public class PlayerCollisionListener implements CollisionListener {
         }
 
         if (e.getOtherBody() instanceof Trampoline) {
-            player.jump(10);
+            player.jump(20);
         }
     }
 }
