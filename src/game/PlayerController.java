@@ -18,11 +18,9 @@ public class PlayerController implements StepListener {
     @Override
     public void preStep(StepEvent e) {
         if (keyHandler.aPressed) {
-            System.out.println("A pressed");
             player.setLinearVelocity(new Vec2(-5f, player.getLinearVelocity().y));
         }
         if (keyHandler.dPressed) {
-            System.out.println("D pressed");
             player.setLinearVelocity(new Vec2(5f, player.getLinearVelocity().y));
         }
     }
