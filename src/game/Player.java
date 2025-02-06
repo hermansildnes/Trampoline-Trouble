@@ -35,7 +35,8 @@ public class Player extends DynamicBody {
    public void jump(float speed) {
       Vec2 v = this.getLinearVelocity();
       if (Math.abs(v.y) < 0.01F) {
-         this.setLinearVelocity(new Vec2(v.x, speed));
+         //this.setLinearVelocity(new Vec2(v.x, speed));
+         this.applyImpulse(new Vec2(0, 200f));
       }
 
    }

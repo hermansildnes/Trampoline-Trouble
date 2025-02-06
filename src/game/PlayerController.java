@@ -18,10 +18,13 @@ public class PlayerController implements StepListener {
     @Override
     public void preStep(StepEvent e) {
         if (keyHandler.aPressed) {
-            player.setLinearVelocity(new Vec2(-5f, player.getLinearVelocity().y));
+            player.setLinearVelocity(new Vec2(-7.5f, player.getLinearVelocity().y));
         }
         if (keyHandler.dPressed) {
-            player.setLinearVelocity(new Vec2(5f, player.getLinearVelocity().y));
+            player.setLinearVelocity(new Vec2(7.5f, player.getLinearVelocity().y));
+        }
+        if (keyHandler.sPressed) {
+            player.applyImpulse(new Vec2(0,-15f));
         }
     }
 

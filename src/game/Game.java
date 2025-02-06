@@ -43,19 +43,12 @@ public class Game {
 
         ArrayList<Enemy> enemies = new ArrayList<Enemy>();
         ArrayList<EnemyController> enemyControllers = new ArrayList<EnemyController>();
-        enemies.add(new Enemy(world, new Vec2(0, 0), trampolines));
+        enemies.add(new Enemy(world, new Vec2(-10, 0), character, trampolines));
         for (Enemy enemy : enemies) {
             EnemyController enemyController = new EnemyController(enemy);
             enemyControllers.add(enemyController);
             world.addStepListener(enemyController);
         }
-
-        // // Make a walker
-        //Walker enemy = new Walker(world, characterShape);
-        // enemy.setPosition(new Vec2(-6,-12));
-        // enemy.addImage(new BodyImage("data/character.png", 4));
-        // enemy.startWalking(-4);
-        //enemy.jump(10);
 
 
 
