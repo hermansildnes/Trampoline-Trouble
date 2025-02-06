@@ -26,19 +26,29 @@ public class Game {
 
         World world = new World();
 
-
-        // Make a ground platform
-        Shape shape = new BoxShape(30, 0.5f);
-        StaticBody ground = new StaticBody(world, shape);
+        StaticBody ground = new StaticBody(world, new BoxShape(50f, 0.5f));
         ground.setPosition(new Vec2(0f, -14.5f));
-
+        //Ground ground = new Ground(world, new Vec2(0f, -10.5f));
 
         Player character = new Player(world, new Vec2(0, -8));
         keyHandler = new KeyHandler();
         playerController = new PlayerController(character, keyHandler);
         world.addStepListener(playerController);
         
-        Trampoline trampoline = new Trampoline(world, ground);
+
+        ArrayList<Trampoline> trampolines = new ArrayList<Trampoline>();
+        trampolines.add(new Trampoline(world, ground));
+        trampolines.add(new Trampoline(world, 10, ground));
+        trampolines.add(new Trampoline(world, -10, ground));
+
+        ArrayList<Enemy> enemies = new ArrayList<Enemy>();
+        ArrayList<EnemyController> enemyControllers = new ArrayList<EnemyController>();
+        enemies.add(new Enemy(world, new Vec2(0, 0), trampolines));
+        for (Enemy enemy : enemies) {
+            EnemyController enemyController = new EnemyController(enemy);
+            enemyControllers.add(enemyController);
+            world.addStepListener(enemyController);
+        }
 
         // // Make a walker
         //Walker enemy = new Walker(world, characterShape);
@@ -75,7 +85,7 @@ public class Game {
         view.requestFocus();
 
         //optional: uncomment this to make a debugging view
-         //JFrame debugView = new DebugViewer(world, 500, 500);
+         JFrame debugView = new DebugViewer(world, 500, 500);
 
         // start our game world simulation!
         world.start();

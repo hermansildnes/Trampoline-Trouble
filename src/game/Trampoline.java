@@ -32,4 +32,8 @@ public class Trampoline extends StaticBody {
     public void putOn(StaticBody ground) {
         this.setPosition(ground.getPosition().add(new Vec2(0, 2f)));
     }
+    
+    public void putOn(float xPos, StaticBody ground) {
+        this.setPosition(new Vec2(xPos, ground.getPosition().y + 2f));
+    }
 }

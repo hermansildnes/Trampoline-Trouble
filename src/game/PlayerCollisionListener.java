@@ -2,7 +2,6 @@ package game;
 
 import city.cs.engine.CollisionEvent;
 import city.cs.engine.CollisionListener;
-import game.Player;
 import city.cs.engine.Walker;
 
 public class PlayerCollisionListener implements CollisionListener {
@@ -14,12 +13,16 @@ public class PlayerCollisionListener implements CollisionListener {
 
     @Override
     public void collide(CollisionEvent e) {
-        if (e.getOtherBody() instanceof Walker) {
-            player.destroy();
-        }
+        //if (e.getOtherBody() instanceof Walker) {
+        //    player.destroy();
+        //}
 
         if (e.getOtherBody() instanceof Trampoline) {
             player.jump(20);
+        }
+
+        if (e.getOtherBody() instanceof Ground) {
+            player.destroy();
         }
     }
 }
