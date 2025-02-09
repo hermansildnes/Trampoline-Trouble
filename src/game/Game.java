@@ -24,36 +24,13 @@ public class Game {
     /** Initialise a new Game. */
     public Game() {
 
-        World world = new World();
-
-        StaticBody ground = new StaticBody(world, new BoxShape(50f, 0.5f));
-        ground.setPosition(new Vec2(0f, -14.5f));
-        //Ground ground = new Ground(world, new Vec2(0f, -10.5f));
-
-        Player character = new Player(world, new Vec2(0, -8));
-        keyHandler = new KeyHandler();
-        playerController = new PlayerController(character, keyHandler);
-        world.addStepListener(playerController);
-        
-
-        ArrayList<Trampoline> trampolines = new ArrayList<Trampoline>();
-        trampolines.add(new Trampoline(world, ground));
-        trampolines.add(new Trampoline(world, 10, ground));
-        trampolines.add(new Trampoline(world, -10, ground));
-
-        ArrayList<Enemy> enemies = new ArrayList<Enemy>();
-        ArrayList<EnemyController> enemyControllers = new ArrayList<EnemyController>();
-        enemies.add(new Enemy(world, new Vec2(-10, 0), character, trampolines));
-        for (Enemy enemy : enemies) {
-            EnemyController enemyController = new EnemyController(enemy);
-            enemyControllers.add(enemyController);
-            world.addStepListener(enemyController);
-        }
-
-
+        GameWorld world = new GameWorld();
 
         // Make a view to look into the game world
-        UserView view = new UserView(world, 800, 600);
+        GameView view = new GameView(world, 800, 600);
+        keyHandler = new KeyHandler();
+        playerController = new PlayerController(world.getPlayer(), keyHandler);
+        world.addStepListener(playerController);
         view.addKeyListener(keyHandler);
 
 
@@ -65,9 +42,6 @@ public class Game {
         //   view to it
         final JFrame frame = new JFrame("City Game");
         frame.add(view);
-
-        // enable the frame to quit the application
-        // when the x button is pressed
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationByPlatform(true);
         frame.setResizable(false);
@@ -75,7 +49,7 @@ public class Game {
         frame.setVisible(true);
 
         view.setFocusable(true);
-        view.requestFocus();
+        view.requestFocusInWindow();
 
         //optional: uncomment this to make a debugging view
          JFrame debugView = new DebugViewer(world, 500, 500);

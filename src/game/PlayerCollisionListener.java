@@ -2,7 +2,6 @@ package game;
 
 import city.cs.engine.CollisionEvent;
 import city.cs.engine.CollisionListener;
-import city.cs.engine.Walker;
 
 public class PlayerCollisionListener implements CollisionListener {
     private Player player;

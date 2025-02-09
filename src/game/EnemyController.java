@@ -50,7 +50,7 @@ public class EnemyController implements StepListener {
         // Experimental
         float targetVelocity = 0;
 
-        if (timeToReachTrampolineY <= timeToReachTrampolineX+0.3) {
+        if (timeToReachTrampolineY <= timeToReachTrampolineX+0.3 && enemy.getLinearVelocity().y <=d 0) {
             if (enemy.getPosition().x < closestTrampoline.getPosition().x) {
                 targetVelocity = this.movementSpeed;
             } else if (enemy.getPosition().x > closestTrampoline.getPosition().x) {
