@@ -1,4 +1,4 @@
-package game;
+package game.environment;
 
 import org.jbox2d.common.Vec2;
 

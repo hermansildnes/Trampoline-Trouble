@@ -1,10 +1,12 @@
-package game;
+package game.enemy;
 
 import java.util.ArrayList;
 
 import org.jbox2d.common.Vec2;
 
 import city.cs.engine.*;
+import game.environment.Trampoline;
+import game.player.Player;
 
 public class Enemy extends Walker {
     public float gravity;

@@ -1,4 +1,4 @@
-package game;
+package game.player;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

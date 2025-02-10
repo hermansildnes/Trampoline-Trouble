@@ -1,7 +1,9 @@
-package game;
+package game.player;
 
 import city.cs.engine.CollisionEvent;
 import city.cs.engine.CollisionListener;
+import game.environment.Ground;
+import game.environment.Trampoline;
 
 public class PlayerCollisionListener implements CollisionListener {
     private Player player;

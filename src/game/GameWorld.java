@@ -7,6 +7,10 @@ import org.jbox2d.common.Vec2;
 import city.cs.engine.BoxShape;
 import city.cs.engine.StaticBody;
 import city.cs.engine.World;
+import game.enemy.Enemy;
+import game.enemy.EnemyController;
+import game.environment.Trampoline;
+import game.player.Player;
 
 public class GameWorld extends World {
     private Player player;

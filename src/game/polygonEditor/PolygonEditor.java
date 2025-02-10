@@ -1,4 +1,4 @@
-package game;
+package game.polygonEditor;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
 import javax.swing.ImageIcon;

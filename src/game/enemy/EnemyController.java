@@ -1,4 +1,4 @@
-package game;
+package game.enemy;
 
 import java.util.ArrayList;
 
@@ -6,6 +6,8 @@ import org.jbox2d.common.Vec2;
 
 import city.cs.engine.StepEvent;
 import city.cs.engine.StepListener;
+import game.environment.Trampoline;
+import game.player.Player;
 
 public class EnemyController implements StepListener {
     private Enemy enemy;
