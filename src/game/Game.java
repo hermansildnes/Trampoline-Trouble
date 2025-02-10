@@ -1,11 +1,9 @@
 package game;
 
 import city.cs.engine.*;
-import city.cs.engine.Shape;
 import game.player.KeyHandler;
 import game.player.PlayerController;
-
-import org.jbox2d.common.Vec2;
+import game.worlds.Level1;
 
 import javax.swing.JFrame;
 
@@ -27,10 +25,9 @@ public class Game {
     /** Initialise a new Game. */
     public Game() {
 
-        GameWorld world = new GameWorld();
-
-        // Make a view to look into the game world
+        Level1 world = new Level1();
         GameView view = new GameView(world, 800, 600);
+
         keyHandler = new KeyHandler();
         playerController = new PlayerController(world.getPlayer(), keyHandler);
         world.addStepListener(playerController);

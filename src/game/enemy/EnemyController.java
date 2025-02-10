@@ -11,23 +11,21 @@ import game.player.Player;
 
 public class EnemyController implements StepListener {
     private Enemy enemy;
+    private Player player;
     private ArrayList<Trampoline> trampolines;
     private Trampoline closestTrampoline;
-    private Player player;
-    private float movementSpeed = 5f;
-
 
     // Experimental
+    private float movementSpeed = 5f;
     private float currentVelocityX = 0;
     private float acceleration = 2.5f;
-    private float smoothFactor = 0.25f;
-
-    public EnemyController(Enemy enemy) {
-        this.enemy = enemy;
-        this.trampolines = enemy.trampolines;
-        this.player = enemy.player;
+    private float smoothFactor = 0.25f;    
     
-    }
+        public EnemyController(Enemy enemy) {
+            this.enemy = enemy;
+            this.player = enemy.getLevel().getPlayer();
+            this.trampolines = enemy.getLevel().getTrampolines();
+        }
 
     @Override
     public void preStep(StepEvent e) {
@@ -44,7 +42,7 @@ public class EnemyController implements StepListener {
 
         // Calculate time until reached trampoline.position.y
         float distanceToTrampoline = Math.abs(enemy.getPosition().y - closestTrampoline.getPosition().y);
-        double timeToReachTrampolineY = distanceToTrampoline / enemy.gravity;
+        double timeToReachTrampolineY = distanceToTrampoline / enemy.getWorld().getGravity();
         // Calculate time needed to reach trampoline.position.x
         float distanceToTrampolineX = Math.abs(enemy.getPosition().x - closestTrampoline.getPosition().x);
         double timeToReachTrampolineX = distanceToTrampolineX / this.movementSpeed;
