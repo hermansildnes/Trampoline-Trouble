@@ -15,14 +15,11 @@ import java.util.List;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-/**
- * Your main game entry point
- */
+
 public class Game {
     private KeyHandler keyHandler;
     private PlayerController playerController;
 
-    /** Initialise a new Game. */
     public Game() {
 
         Level1 world = new Level1();
@@ -33,13 +30,9 @@ public class Game {
         world.addStepListener(playerController);
         view.addKeyListener(keyHandler);
 
-
         //optional: draw a 1-metre grid over the view
         //view.setGridResolution(1);
 
-
-        //4. create a Java window (frame) and add the game
-        //   view to it
         final JFrame frame = new JFrame("City Game");
         frame.add(view);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -54,7 +47,6 @@ public class Game {
         //optional: uncomment this to make a debugging view
          JFrame debugView = new DebugViewer(world, 500, 500);
 
-        // start our game world simulation!
         world.start();
     }
 

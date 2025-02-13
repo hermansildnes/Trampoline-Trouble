@@ -26,6 +26,10 @@ public class PlayerController implements StepListener {
         if (keyHandler.sPressed) {
             player.applyImpulse(new Vec2(0,-15f));
         }
+
+        if (player.isJumping()) {
+            player.incrementFrameCounter();
+        }
     }
 
     @Override

@@ -16,4 +16,8 @@ public abstract class Level extends World{
     public ArrayList<Trampoline> getTrampolines() {
         return this.trampolines;
     }
+
+    public Level() {
+        super();
+    }
 }
