@@ -4,6 +4,8 @@ import org.jbox2d.common.Vec2;
 
 import city.cs.engine.StepEvent;
 import city.cs.engine.StepListener;
+import game.KeyHandler;
+import game.MouseHandler;
 
 public class PlayerController implements StepListener {
     private Player player;
@@ -12,6 +14,7 @@ public class PlayerController implements StepListener {
     public PlayerController(Player player, KeyHandler keyHandler) {
         this.player = player;
         this.keyHandler = keyHandler;
+    
     
     }
 
@@ -26,6 +29,8 @@ public class PlayerController implements StepListener {
         if (keyHandler.sPressed) {
             player.applyImpulse(new Vec2(0,-15f));
         }
+
+        
 
         if (player.isJumping()) {
             player.incrementFrameCounter();

@@ -17,7 +17,7 @@ public class PlayerCollisionListener implements CollisionListener {
     @Override
     public void collide(CollisionEvent e) {
         if (e.getOtherBody() instanceof Enemy) {
-           player.destroy();
+           //player.destroy();
         }
 
         if (e.getOtherBody() instanceof Trampoline) {

@@ -1,8 +1,8 @@
 package game;
 
 import city.cs.engine.*;
-import game.player.KeyHandler;
 import game.player.PlayerController;
+import game.player.TargetController;
 import game.worlds.Level1;
 
 import javax.swing.JFrame;
@@ -18,7 +18,9 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class Game {
     private KeyHandler keyHandler;
+    private MouseHandler mouseHandler;
     private PlayerController playerController;
+    private TargetController targetController;
 
     public Game() {
 
@@ -26,9 +28,13 @@ public class Game {
         GameView view = new GameView(world, 800, 600);
 
         keyHandler = new KeyHandler();
+        mouseHandler = new MouseHandler(view);
         playerController = new PlayerController(world.getPlayer(), keyHandler);
+        targetController = new TargetController(world.getTarget(), world.getPlayer(), mouseHandler);
         world.addStepListener(playerController);
+        world.addStepListener(targetController);
         view.addKeyListener(keyHandler);
+        view.addMouseMotionListener(mouseHandler);
 
         //optional: draw a 1-metre grid over the view
         //view.setGridResolution(1);
@@ -45,7 +51,7 @@ public class Game {
         view.requestFocusInWindow();
 
         //optional: uncomment this to make a debugging view
-         JFrame debugView = new DebugViewer(world, 500, 500);
+         JFrame debugView = new DebugViewer(world, 800, 600);
 
         world.start();
     }

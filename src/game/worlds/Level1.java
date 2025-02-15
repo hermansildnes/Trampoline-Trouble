@@ -1,5 +1,6 @@
 package game.worlds;
 
+import java.awt.Graphics2D;
 import java.util.ArrayList;
 
 import org.jbox2d.common.Vec2;
@@ -10,6 +11,7 @@ import game.enemy.Enemy;
 import game.enemy.EnemyController;
 import game.environment.Trampoline;
 import game.player.Player;
+import game.player.Target;
 
 public class Level1 extends Level {
     
@@ -19,8 +21,8 @@ public class Level1 extends Level {
         StaticBody ground = new StaticBody(this, new BoxShape(50f, 0.5f));
         ground.setPosition(new Vec2(0f, -14.5f));
         //Ground ground = new Ground(world, new Vec2(0f, -10.5f));
-        this.player = new Player(this, new Vec2(0, -8));
-        
+        this.player = new Player(this, new Vec2(0, -8));        
+        this.target = new Target(this, player);
 
         this.trampolines = new ArrayList<Trampoline>();
         trampolines.add(new Trampoline(this, ground));
