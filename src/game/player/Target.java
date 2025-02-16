@@ -18,13 +18,11 @@ import city.cs.engine.World;
 
 public class Target extends StaticBody{
     private BodyImage image = new BodyImage("data/art/target.png", 1.5f);
-    private Player player;
 
-    public Target(World world, Player player) {
+    public Target(World world) {
         super(world);
         GhostlyFixture fixture = new GhostlyFixture(this, new CircleShape(1.0f));
         this.addImage(image);
-        this.player = player;
     }
     
 }

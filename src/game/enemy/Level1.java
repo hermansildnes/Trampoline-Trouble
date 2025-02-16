@@ -36,6 +36,5 @@ public class Level1 extends Level {
             enemyControllers.add(enemyController);
             this.addStepListener(enemyController);
         }
-
     }
 }

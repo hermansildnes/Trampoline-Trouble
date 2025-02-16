@@ -5,7 +5,6 @@ import org.jbox2d.common.Vec2;
 import city.cs.engine.StepEvent;
 import city.cs.engine.StepListener;
 import game.KeyHandler;
-import game.MouseHandler;
 
 public class PlayerController implements StepListener {
     private Player player;

@@ -22,8 +22,10 @@ public class TargetController implements StepListener {
         Vec2 playerPos = player.getPosition();
         Vec2 mousePos = mouseHandler.mousePosition;
         Vec2 difference = mousePos.sub(playerPos);
-        difference.normalize();
-        difference.mulLocal(5);
+        if (difference.length() > 8) {
+            difference.normalize();
+            difference.mulLocal(8);
+        }
         target.setPosition(playerPos.add(difference));
     }
 
