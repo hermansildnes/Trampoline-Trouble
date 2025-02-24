@@ -29,8 +29,19 @@ public class PlayerCollisionListener implements CollisionListener {
         }
 
         if (e.getOtherBody() instanceof Ground) {
-            player.destroy();
-            ((Level)player.getWorld()).getTarget().destroy();
+            player.startAnimation(Player.AnimationState.DEATH);
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            player.destroy();
+                            if (player.getWorld() instanceof Level) {
+                                ((Level)player.getWorld()).getTarget().destroy();
+                            }
+                        }
+                    },
+                    4 * 4 * 16  // frames * steps per frame * milliseconds per step
+            );
         }
     }
 }

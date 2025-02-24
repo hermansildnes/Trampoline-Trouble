@@ -39,7 +39,7 @@ public class PlayerController implements StepListener {
         }
         }
 
-        if (player.isJumping()) {
+        if (player.isAnimating()) {
             player.incrementFrameCounter();
         }
     }

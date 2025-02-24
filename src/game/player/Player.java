@@ -2,6 +2,9 @@ package game.player;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.jbox2d.common.Vec2;
 
 import city.cs.engine.Body;
@@ -14,28 +17,34 @@ import game.player.equipments.GunPlayer;
 
 public class Player extends DynamicBody {
    private static final String assetPath = "data/assets/player/hooded/";
+   private static final int  FRAMES_PER_ANIMATION = 4;
+   public enum AnimationState {
+      NEUTRAL,
+      JUMP,
+      DEATH
+   }
 
    private static final BodyImage neutral = new BodyImage(assetPath + "neutral.png", 4);;
-   private BodyImage[] jumpAnimation = new BodyImage[9];
-   private BodyImage[] deathAnimation = new BodyImage[4];
-   // Animation logic
-   private boolean isJumping = false;
-   private int currentJumpFrame = 0;
+
+   private Map<AnimationState, BodyImage[]> animations;
+   private AnimationState currentState = AnimationState.NEUTRAL;
+   private boolean isAnimating = false;
+   private int currentFrame = 0;
    private int frameCounter = 0;
-   private static final int  FRAMES_PER_ANIMATION = 4;
-   // Equipment logic
+   
 
 
 
 
    public Player(World world, Vec2 position) {
-        final Shape playerShape = new PolygonShape(-0.81f,-1.99f, -1.33f,-0.8f, -1.34f,0.83f, -0.68f,1.98f, 0.54f,1.98f, 1.18f,0.93f, 1.21f,-0.78f, 0.66f,-1.97f);
-        super(world, playerShape);
-        this.addImage(neutral);
-        this.addCollisionListener(new PlayerCollisionListener(this));
-        this.setPosition(position);
-        this.jumpAnimation = loadJumpAnimation();
-        this.deathAnimation = loadDeathAnimation();
+         final Shape playerShape = new PolygonShape(-0.81f,-1.99f, -1.33f,-0.8f, -1.34f,0.83f, -0.68f,1.98f, 0.54f,1.98f, 1.18f,0.93f, 1.21f,-0.78f, 0.66f,-1.97f);
+         super(world, playerShape);
+         animations = new HashMap<>();
+         animations.put(AnimationState.JUMP, loadAnimation("jump", 8));
+         animations.put(AnimationState.DEATH, loadAnimation("death", 4));
+         this.addImage(neutral);
+         this.addCollisionListener(new PlayerCollisionListener(this));
+         this.setPosition(position);
 
 
 
@@ -59,52 +68,59 @@ public class Player extends DynamicBody {
       }
    }
 
-   private BodyImage[] loadJumpAnimation() {
-      BodyImage[] jumpAnimation = new BodyImage[8];
-      for (int i = 0; i < jumpAnimation.length; i++) {
-         jumpAnimation[i] = new BodyImage(assetPath + "jump" + i + ".png", 4);
+   private BodyImage[] loadAnimation(String prefix, int frameCount) {
+      BodyImage[] frames = new BodyImage[frameCount];
+      for (int i = 0; i < frameCount; i++) {
+         frames[i] = new BodyImage(assetPath + prefix + i + ".png", 4);
       }
-      return jumpAnimation;
-   }
-   
-   private BodyImage[] loadDeathAnimation() {
-      BodyImage[] deathAnimation = new BodyImage[4];
-      for (int i = 0; i < deathAnimation.length; i++) {
-         deathAnimation[i] = new BodyImage(assetPath + "death" + i + ".png", 4);
-      }
-      return deathAnimation;
+      return frames;
    }
 
-   public void startJumpAnimation() {
-      isJumping = true;
-      currentJumpFrame = 0;
+   public void startAnimation(AnimationState state) {
+      currentState = state;
+      isAnimating = true;
+      currentFrame = 0;
       frameCounter = 0;
-      updateJumpAnimation();
+      updateAnimation();
    }
 
-   private void updateJumpAnimation() {
-      if (currentJumpFrame < jumpAnimation.length) {
+   private void updateAnimation() {
+      if (currentState == AnimationState.NEUTRAL || !isAnimating) {
          this.removeAllImages();
-         this.addImage(jumpAnimation[currentJumpFrame]);
+         this.addImage(neutral);
+         return;
+      }
+
+      BodyImage[] currentAnimation = animations.get(currentState);
+      if (currentFrame < currentAnimation.length) {
+         this.removeAllImages();
+         this.addImage(currentAnimation[currentFrame]);
       } else {
-         isJumping = false;
+         isAnimating = false;
          this.removeAllImages();
          this.addImage(neutral);
       }
    }
 
-   public boolean isJumping() {
-      return isJumping;
-   }
-
    public void incrementFrameCounter() {
+      if (!isAnimating) return;
+
       frameCounter++;
       if (frameCounter == FRAMES_PER_ANIMATION) {
          frameCounter = 0;
-         currentJumpFrame++;
-         updateJumpAnimation();
+         currentFrame++;
+         updateAnimation();
       }
    }
+
+   public AnimationState getCurrentState() {
+      return currentState;
+   }
+
+   public boolean isAnimating() {
+      return isAnimating;
+   }
+
    public GunPlayer getGunPlayer() {
       this.removeAllImages();
       this.addImage(new BodyImage("data/assets/player/gun.png"));

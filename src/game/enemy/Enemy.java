@@ -9,7 +9,8 @@ public class Enemy extends Walker {
     private Level level;
 
     public Enemy(Level world, Vec2 position) {
-        Shape shape = new BoxShape(1, 2);
+        //Shape shape = new BoxShape(1, 2);
+        Shape shape = new CircleShape(1.0f);
         super(world, shape);
         // Remove this later to create more enemy types that extends this class
         this.addImage(new BodyImage("data/assets/player/character.png", 4));

@@ -14,7 +14,7 @@ public class TrampolineSensorListener implements SensorListener {
     @Override
     public void beginContact(SensorEvent e) {
         if (e.getContactBody() instanceof Player) {
-            ((Player)e.getContactBody()).startJumpAnimation();
+            ((Player)e.getContactBody()).startAnimation(Player.AnimationState.JUMP);
         }
     }
 

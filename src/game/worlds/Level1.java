@@ -19,8 +19,11 @@ public class Level1 extends Level {
     public Level1() {
         super();
         Ground ground = new Ground(this, new Vec2(0f, -14f));
+        this.enemies = new ArrayList<Enemy>();
+
         this.player = new GunPlayer(this, new Vec2(0, -8));        
         this.target = new Target(this);
+
 
         this.collectibles.add(new GunCollectible(this, new Vec2(10, -5)));
 
@@ -29,7 +32,6 @@ public class Level1 extends Level {
         trampolines.add(new Trampoline(this, 10, ground));
         trampolines.add(new Trampoline(this, -10, ground));
 
-        ArrayList<Enemy> enemies = new ArrayList<Enemy>();
         ArrayList<EnemyController> enemyControllers = new ArrayList<EnemyController>();
         enemies.add(new Enemy(this, new Vec2(-10, 0)));
         for (Enemy enemy : enemies) {
