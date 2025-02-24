@@ -9,14 +9,17 @@ import java.awt.event.MouseEvent;
 public class MouseHandler implements MouseListener, MouseMotionListener {
     public Vec2 mousePosition;
     private GameView view; 
+    public boolean mouseClicked;
 
     public MouseHandler(GameView view) {
         mousePosition = new Vec2(0,0);
         this.view = view;
+        mouseClicked = false;
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
+        mouseClicked = true;
     }
 
     @Override

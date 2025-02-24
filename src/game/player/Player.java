@@ -10,10 +10,12 @@ import city.cs.engine.DynamicBody;
 import city.cs.engine.PolygonShape;
 import city.cs.engine.Shape;
 import city.cs.engine.World;
-import game.environment.Collectible;
+import game.player.equipments.GunPlayer;
 
 public class Player extends DynamicBody {
-   private BodyImage neutral = new BodyImage("data/art/hooded/sprites/neutral.png", 4);
+   private static final String assetPath = "data/assets/player/hooded/";
+
+   private static final BodyImage neutral = new BodyImage(assetPath + "neutral.png", 4);;
    private BodyImage[] jumpAnimation = new BodyImage[9];
    private BodyImage[] deathAnimation = new BodyImage[4];
    // Animation logic
@@ -21,6 +23,7 @@ public class Player extends DynamicBody {
    private int currentJumpFrame = 0;
    private int frameCounter = 0;
    private static final int  FRAMES_PER_ANIMATION = 4;
+   // Equipment logic
 
 
 
@@ -59,7 +62,7 @@ public class Player extends DynamicBody {
    private BodyImage[] loadJumpAnimation() {
       BodyImage[] jumpAnimation = new BodyImage[8];
       for (int i = 0; i < jumpAnimation.length; i++) {
-         jumpAnimation[i] = new BodyImage("data/art/hooded/sprites/jump" + i + ".png", 4);
+         jumpAnimation[i] = new BodyImage(assetPath + "jump" + i + ".png", 4);
       }
       return jumpAnimation;
    }
@@ -67,7 +70,7 @@ public class Player extends DynamicBody {
    private BodyImage[] loadDeathAnimation() {
       BodyImage[] deathAnimation = new BodyImage[4];
       for (int i = 0; i < deathAnimation.length; i++) {
-         deathAnimation[i] = new BodyImage("data/art/hooded/sprites/death" + i + ".png", 4);
+         deathAnimation[i] = new BodyImage(assetPath + "death" + i + ".png", 4);
       }
       return deathAnimation;
    }
@@ -101,5 +104,10 @@ public class Player extends DynamicBody {
          currentJumpFrame++;
          updateJumpAnimation();
       }
+   }
+   public GunPlayer getGunPlayer() {
+      this.removeAllImages();
+      this.addImage(new BodyImage("data/assets/player/gun.png"));
+      return (GunPlayer) this;
    }
 }

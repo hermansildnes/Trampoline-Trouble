@@ -5,14 +5,18 @@ import org.jbox2d.common.Vec2;
 import city.cs.engine.StepEvent;
 import city.cs.engine.StepListener;
 import game.KeyHandler;
+import game.MouseHandler;
+import game.player.equipments.GunPlayer;
 
 public class PlayerController implements StepListener {
     private Player player;
     private KeyHandler keyHandler;
+    private MouseHandler mouseHandler;
 
-    public PlayerController(Player player, KeyHandler keyHandler) {
+    public PlayerController(Player player, KeyHandler keyHandler, MouseHandler mouseHandler) {
         this.player = player;
         this.keyHandler = keyHandler;
+        this.mouseHandler = mouseHandler;
     
     
     }
@@ -28,8 +32,12 @@ public class PlayerController implements StepListener {
         if (keyHandler.sPressed) {
             player.applyImpulse(new Vec2(0,-15f));
         }
-
-        
+        if (mouseHandler.mouseClicked) {
+            if (player instanceof GunPlayer) {
+                ((GunPlayer)player).shoot(mouseHandler.mousePosition);
+            mouseHandler.mouseClicked = false;
+        }
+        }
 
         if (player.isJumping()) {
             player.incrementFrameCounter();

@@ -15,8 +15,7 @@ public class GameView extends UserView {
 
     public GameView(Level1 world, int width, int height) {
         super(world, width, height);
-        background = new ImageIcon("data/art/backgrounds/mountains/background_glacial_mountains_lightened.png").getImage();
-        targetImage = new ImageIcon("data/art/target.png").getImage();
+        background = new ImageIcon("data/assets/backgrounds/background_glacial_mountains_lightened.png").getImage();
     }
 
     @Override

@@ -29,12 +29,13 @@ public class Game {
 
         keyHandler = new KeyHandler();
         mouseHandler = new MouseHandler(view);
-        playerController = new PlayerController(world.getPlayer(), keyHandler);
+        playerController = new PlayerController(world.getPlayer(), keyHandler, mouseHandler);
         targetController = new TargetController(world.getTarget(), world.getPlayer(), mouseHandler);
         world.addStepListener(playerController);
         world.addStepListener(targetController);
         view.addKeyListener(keyHandler);
         view.addMouseMotionListener(mouseHandler);
+        view.addMouseListener(mouseHandler);
 
         //optional: draw a 1-metre grid over the view
         //view.setGridResolution(1);

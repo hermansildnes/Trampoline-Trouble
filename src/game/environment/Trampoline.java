@@ -14,7 +14,7 @@ public class Trampoline extends StaticBody {
 
     public Trampoline(World world) {
         super(world, trampolineShape);
-        this.addImage(new BodyImage("data/trampoline.png", 4));
+        this.addImage(new BodyImage("data/assets/environment/trampoline.png", 4));
         animationTrigger = new TrampolineAnimationTrigger(world, this);
     }
 

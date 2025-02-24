@@ -11,9 +11,9 @@ import city.cs.engine.World;
 public class Ground extends StaticBody{    
 
     public Ground(World world, Vec2 position) {
-        Shape shape = new BoxShape(40, 2f);
+        Shape shape = new BoxShape(20f, 1f);
         super(world, shape);
         this.setPosition(position);
-        this.addImage(new BodyImage("data/ground.png", 4f));
+        this.addImage(new BodyImage("data/assets/environment/ground.png", 3f));
     }
 }

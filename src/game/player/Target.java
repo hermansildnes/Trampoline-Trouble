@@ -17,7 +17,7 @@ import city.cs.engine.World;
 
 
 public class Target extends StaticBody{
-    private BodyImage image = new BodyImage("data/art/target.png", 1.5f);
+    private BodyImage image = new BodyImage("data/assets/player/target.png", 1.5f);
 
     public Target(World world) {
         super(world);

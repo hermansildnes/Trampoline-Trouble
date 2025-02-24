@@ -12,7 +12,7 @@ public class Enemy extends Walker {
         Shape shape = new BoxShape(1, 2);
         super(world, shape);
         // Remove this later to create more enemy types that extends this class
-        this.addImage(new BodyImage("data/character.png", 4));
+        this.addImage(new BodyImage("data/assets/player/character.png", 4));
         this.addCollisionListener(new EnemyCollisionListener(this));
         this.setPosition(position);
         this.level = world;
