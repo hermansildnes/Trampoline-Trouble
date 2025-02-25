@@ -8,10 +8,9 @@ import game.enemy.Enemy;
 import game.enemy.EnemyController;
 import game.environment.Ground;
 import game.environment.Trampoline;
-import game.environment.collectibles.GunCollectible;
+import game.environment.collectibles.Collectible;
 import game.player.Player;
 import game.player.Target;
-import game.player.equipments.GunPlayer;
 
 public class Level1 extends Level {
     
@@ -21,11 +20,11 @@ public class Level1 extends Level {
         Ground ground = new Ground(this, new Vec2(0f, -14f));
         this.enemies = new ArrayList<Enemy>();
 
-        this.player = new GunPlayer(this, new Vec2(0, -8));        
+        this.player = new Player(this, new Vec2(0, -8));        
         this.target = new Target(this);
 
 
-        this.collectibles.add(new GunCollectible(this, new Vec2(10, -5)));
+        this.collectibles.add(new Collectible(this, new Vec2(10, -5), Collectible.CollectibleType.LASERGUN));
 
         this.trampolines = new ArrayList<Trampoline>();
         trampolines.add(new Trampoline(this, ground));

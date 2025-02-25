@@ -11,7 +11,6 @@ import game.worlds.Level1;
 
 public class GameView extends UserView {
     private Image background;
-    private Image targetImage;
 
     public GameView(Level1 world, int width, int height) {
         super(world, width, height);

@@ -6,7 +6,6 @@ import game.enemy.Enemy;
 import game.environment.Ground;
 import game.environment.Trampoline;
 import game.environment.collectibles.Collectible;
-import game.environment.collectibles.GunCollectible;
 import game.worlds.Level;
 
 public class PlayerCollisionListener implements CollisionListener {

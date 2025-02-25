@@ -6,7 +6,6 @@ import city.cs.engine.StepEvent;
 import city.cs.engine.StepListener;
 import game.KeyHandler;
 import game.MouseHandler;
-import game.player.equipments.GunPlayer;
 
 public class PlayerController implements StepListener {
     private Player player;
@@ -33,8 +32,8 @@ public class PlayerController implements StepListener {
             player.applyImpulse(new Vec2(0,-15f));
         }
         if (mouseHandler.mouseClicked) {
-            if (player instanceof GunPlayer) {
-                ((GunPlayer)player).shoot(mouseHandler.mousePosition);
+            if (player.hasEquipment()) {
+                player.useEquipment(mouseHandler.mousePosition);
             mouseHandler.mouseClicked = false;
         }
         }

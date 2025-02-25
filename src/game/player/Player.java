@@ -2,6 +2,7 @@ package game.player;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,10 +13,14 @@ import city.cs.engine.BodyImage;
 import city.cs.engine.DynamicBody;
 import city.cs.engine.PolygonShape;
 import city.cs.engine.Shape;
-import city.cs.engine.World;
-import game.player.equipments.GunPlayer;
+import game.enemy.Enemy;
+import game.environment.collectibles.Collectible;
+import game.player.equipments.Equipment;
+import game.player.equipments.LaserGun;
+import game.worlds.Level;
 
 public class Player extends DynamicBody {
+   private Equipment equipment;
    private static final String assetPath = "data/assets/player/hooded/";
    private static final int  FRAMES_PER_ANIMATION = 4;
    public enum AnimationState {
@@ -31,12 +36,8 @@ public class Player extends DynamicBody {
    private boolean isAnimating = false;
    private int currentFrame = 0;
    private int frameCounter = 0;
-   
 
-
-
-
-   public Player(World world, Vec2 position) {
+   public Player(Level world, Vec2 position) {
          final Shape playerShape = new PolygonShape(-0.81f,-1.99f, -1.33f,-0.8f, -1.34f,0.83f, -0.68f,1.98f, 0.54f,1.98f, 1.18f,0.93f, 1.21f,-0.78f, 0.66f,-1.97f);
          super(world, playerShape);
          animations = new HashMap<>();
@@ -45,7 +46,6 @@ public class Player extends DynamicBody {
          this.addImage(neutral);
          this.addCollisionListener(new PlayerCollisionListener(this));
          this.setPosition(position);
-
 
 
       // Workaround to call the setFixedRotation method from the Body class, which is package-private
@@ -121,9 +121,27 @@ public class Player extends DynamicBody {
       return isAnimating;
    }
 
-   public GunPlayer getGunPlayer() {
-      this.removeAllImages();
-      this.addImage(new BodyImage("data/assets/player/gun.png"));
-      return (GunPlayer) this;
+
+   public void setEquipment(Collectible.CollectibleType collectibleType) {
+      switch (collectibleType) {
+         case LASERGUN:
+            this.equipment = new LaserGun(this);
+            break;
+      }
+   }
+
+   public boolean hasEquipment() {
+      return equipment != null;
+   }
+
+   public void useEquipment(Vec2 mousePosition) {
+      if (equipment != null) {
+         equipment.use(mousePosition);
+      }
+   }
+
+   @Override
+   public Level getWorld() {
+      return (Level) super.getWorld();
    }
 }
