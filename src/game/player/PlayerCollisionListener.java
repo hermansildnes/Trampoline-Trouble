@@ -5,7 +5,6 @@ import city.cs.engine.CollisionListener;
 import game.enemy.Enemy;
 import game.environment.Ground;
 import game.environment.Trampoline;
-import game.worlds.Level;
 
 public class PlayerCollisionListener implements CollisionListener {
     private Player player;

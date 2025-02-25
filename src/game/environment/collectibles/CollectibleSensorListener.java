@@ -15,6 +15,7 @@ public class CollectibleSensorListener implements SensorListener {
     public void beginContact(SensorEvent e) {
         if (e.getContactBody() instanceof Player) {
             ((Player)e.getContactBody()).setEquipment(collectible.getCollectibleType());
+            collectible.destroy();
             }
         }
 

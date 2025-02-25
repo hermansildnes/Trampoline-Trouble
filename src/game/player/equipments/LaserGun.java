@@ -31,7 +31,8 @@ public class LaserGun implements Equipment {
                 float distanceToEnemy = Vec2.dot(enemyDistance, direction);
                 if (distanceToEnemy > 0) {
                     System.out.println("Hit enemy at " + enemyPosition);
-                    enemy.destroy();
+                    enemy.decreaseHealth(1);
+                    System.out.println("Enemy health: " + enemy.getHealth());
                     break;
                 }
             }

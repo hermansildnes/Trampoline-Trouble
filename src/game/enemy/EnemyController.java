@@ -23,12 +23,14 @@ public class EnemyController implements StepListener {
     
         public EnemyController(Enemy enemy) {
             this.enemy = enemy;
-            this.player = enemy.getLevel().getPlayer();
-            this.trampolines = enemy.getLevel().getTrampolines();
+            this.player = enemy.getWorld().getPlayer();
+            this.trampolines = enemy.getWorld().getTrampolines();
         }
 
     @Override
     public void preStep(StepEvent e) {
+        enemy.getHealthbar().setPosition(enemy.getPosition().add(new Vec2(0, 3f)));
+
         // Calculate closest trampoline
         for (Trampoline trampoline: trampolines) {
             if (closestTrampoline == null) {
