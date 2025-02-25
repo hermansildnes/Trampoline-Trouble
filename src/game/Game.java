@@ -2,7 +2,6 @@ package game;
 
 import city.cs.engine.*;
 import game.player.PlayerController;
-import game.player.TargetController;
 import game.worlds.Level1;
 
 import javax.swing.JFrame;
@@ -20,7 +19,6 @@ public class Game {
     private KeyHandler keyHandler;
     private MouseHandler mouseHandler;
     private PlayerController playerController;
-    private TargetController targetController;
 
     public Game() {
 
@@ -30,9 +28,7 @@ public class Game {
         keyHandler = new KeyHandler();
         mouseHandler = new MouseHandler(view);
         playerController = new PlayerController(world.getPlayer(), keyHandler, mouseHandler);
-        targetController = new TargetController(world.getTarget(), world.getPlayer(), mouseHandler);
         world.addStepListener(playerController);
-        world.addStepListener(targetController);
         view.addKeyListener(keyHandler);
         view.addMouseMotionListener(mouseHandler);
         view.addMouseListener(mouseHandler);
@@ -52,7 +48,7 @@ public class Game {
         view.requestFocusInWindow();
 
         //optional: uncomment this to make a debugging view
-         JFrame debugView = new DebugViewer(world, 800, 600);
+         //JFrame debugView = new DebugViewer(world, 800, 600);
 
         world.start();
     }

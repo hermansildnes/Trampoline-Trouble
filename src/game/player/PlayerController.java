@@ -41,6 +41,16 @@ public class PlayerController implements StepListener {
         if (player.isAnimating()) {
             player.incrementFrameCounter();
         }
+
+        // Target logic
+        Vec2 playerPos = player.getPosition();
+        Vec2 mousePos = mouseHandler.mousePosition;
+        Vec2 difference = mousePos.sub(playerPos);
+        if (difference.length() > 8) {
+            difference.normalize();
+            difference.mulLocal(8);
+        }
+        player.getTarget().setPosition(playerPos.add(difference));
     }
 
     @Override

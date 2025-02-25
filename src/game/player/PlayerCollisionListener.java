@@ -5,7 +5,6 @@ import city.cs.engine.CollisionListener;
 import game.enemy.Enemy;
 import game.environment.Ground;
 import game.environment.Trampoline;
-import game.environment.collectibles.Collectible;
 import game.worlds.Level;
 
 public class PlayerCollisionListener implements CollisionListener {
@@ -34,9 +33,6 @@ public class PlayerCollisionListener implements CollisionListener {
                         @Override
                         public void run() {
                             player.destroy();
-                            if (player.getWorld() instanceof Level) {
-                                ((Level)player.getWorld()).getTarget().destroy();
-                            }
                         }
                     },
                     4 * 4 * 16  // frames * steps per frame * milliseconds per step

@@ -2,7 +2,6 @@ package game.player;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,13 +12,15 @@ import city.cs.engine.BodyImage;
 import city.cs.engine.DynamicBody;
 import city.cs.engine.PolygonShape;
 import city.cs.engine.Shape;
-import game.enemy.Enemy;
+import city.cs.engine.StaticBody;
 import game.environment.collectibles.Collectible;
 import game.player.equipments.Equipment;
 import game.player.equipments.LaserGun;
 import game.worlds.Level;
 
 public class Player extends DynamicBody {
+   private BodyImage targetImage = new BodyImage("data/assets/player/target.png", 1.5f);
+   private StaticBody target;
    private Equipment equipment;
    private static final String assetPath = "data/assets/player/hooded/";
    private static final int  FRAMES_PER_ANIMATION = 4;
@@ -46,6 +47,9 @@ public class Player extends DynamicBody {
          this.addImage(neutral);
          this.addCollisionListener(new PlayerCollisionListener(this));
          this.setPosition(position);
+
+         this.target = new StaticBody(world);
+         target.addImage(targetImage);
 
 
       // Workaround to call the setFixedRotation method from the Body class, which is package-private
@@ -143,5 +147,9 @@ public class Player extends DynamicBody {
    @Override
    public Level getWorld() {
       return (Level) super.getWorld();
+   }
+
+   public StaticBody getTarget() {
+      return target;
    }
 }

@@ -10,7 +10,6 @@ import game.environment.Ground;
 import game.environment.Trampoline;
 import game.environment.collectibles.Collectible;
 import game.player.Player;
-import game.player.Target;
 
 public class Level1 extends Level {
     
@@ -21,7 +20,7 @@ public class Level1 extends Level {
         this.enemies = new ArrayList<Enemy>();
 
         this.player = new Player(this, new Vec2(0, -8));        
-        this.target = new Target(this);
+        //this.target = new Target(this);
 
 
         this.collectibles.add(new Collectible(this, new Vec2(10, -5), Collectible.CollectibleType.LASERGUN));
