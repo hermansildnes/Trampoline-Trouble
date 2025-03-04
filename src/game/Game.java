@@ -25,9 +25,11 @@ public class Game {
         Level1 world = new Level1();
         GameView view = new GameView(world, 800, 600);
 
+        world.getSimulationSettings();
+
         keyHandler = new KeyHandler();
         mouseHandler = new MouseHandler(view);
-        playerController = new PlayerController(world.getPlayer(), keyHandler, mouseHandler);
+        playerController = new PlayerController(world.getPlayer(), keyHandler, mouseHandler, view);
         world.addStepListener(playerController);
         view.addKeyListener(keyHandler);
         view.addMouseMotionListener(mouseHandler);
@@ -48,7 +50,7 @@ public class Game {
         view.requestFocusInWindow();
 
         //optional: uncomment this to make a debugging view
-         //JFrame debugView = new DebugViewer(world, 800, 600);
+         JFrame debugView = new DebugViewer(world, 800, 600);
 
         world.start();
     }

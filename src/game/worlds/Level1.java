@@ -12,16 +12,13 @@ import game.environment.collectibles.Collectible;
 import game.player.Player;
 
 public class Level1 extends Level {
-    
 
     public Level1() {
         super();
         Ground ground = new Ground(this, new Vec2(0f, -14f));
         this.enemies = new ArrayList<Enemy>();
 
-        this.player = new Player(this, new Vec2(0, -8));        
-        //this.target = new Target(this);
-
+        this.player = new Player(this, new Vec2(0, -8));
 
         this.collectibles.add(new Collectible(this, new Vec2(10, -5), Collectible.CollectibleType.LASERGUN));
 

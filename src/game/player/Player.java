@@ -37,10 +37,19 @@ public class Player extends DynamicBody {
    private boolean isAnimating = false;
    private int currentFrame = 0;
    private int frameCounter = 0;
+   private static final Shape PLAYER_SHAPE = new PolygonShape(
+      -0.81f, -2.1f,   // Bottom left (slightly lower)
+      -1.33f, -0.8f,   // Left side
+      -1.34f, 0.83f,   // Left middle
+      -0.68f, 1.98f,   // Top left
+      0.54f, 1.98f,    // Top right
+      1.18f, 0.93f,    // Right middle
+      1.21f, -0.78f,   // Right side
+      0.66f, -2.1f     // Bottom right (slightly lower)
+   );
 
    public Player(Level world, Vec2 position) {
-         final Shape playerShape = new PolygonShape(-0.81f,-1.99f, -1.33f,-0.8f, -1.34f,0.83f, -0.68f,1.98f, 0.54f,1.98f, 1.18f,0.93f, 1.21f,-0.78f, 0.66f,-1.97f);
-         super(world, playerShape);
+      super(world, PLAYER_SHAPE);
          animations = new HashMap<>();
          animations.put(AnimationState.JUMP, loadAnimation("jump", 8));
          animations.put(AnimationState.DEATH, loadAnimation("death", 4));
@@ -65,12 +74,9 @@ public class Player extends DynamicBody {
 
     // Jump method ripped from the Walker class in city.cs.engine
    public void jump(float speed) {
-      Vec2 v = this.getLinearVelocity();
-      if (Math.abs(v.y) < 0.01F) {
-         this.setLinearVelocity(new Vec2(v.x, speed));
-         //this.applyImpulse(new Vec2(0, 200f));
+      this.setLinearVelocity(new Vec2(this.getLinearVelocity().x, 0));
+      this.applyImpulse(new Vec2(this.getLinearVelocity().x, speed));
       }
-   }
 
    private BodyImage[] loadAnimation(String prefix, int frameCount) {
       BodyImage[] frames = new BodyImage[frameCount];

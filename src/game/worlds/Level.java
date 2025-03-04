@@ -2,6 +2,8 @@ package game.worlds;
 
 import java.util.ArrayList;
 
+import javax.swing.text.View;
+
 import city.cs.engine.World;
 import game.enemy.Enemy;
 import game.environment.Trampoline;
@@ -29,4 +31,5 @@ public abstract class Level extends World{
     public ArrayList<Collectible> getCollectibles() {
         return this.collectibles;
     }
+
 }

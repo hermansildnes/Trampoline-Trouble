@@ -7,7 +7,7 @@ import game.worlds.Level;
 
 public class Enemy extends Walker {
     private int health = 5;
-    private BodyImage[] healthImages = {
+    private static final BodyImage[] healthImages = {
         new BodyImage("data/assets/uibars/1hp.png", 2f),
         new BodyImage("data/assets/uibars/2hp.png", 2f),
         new BodyImage("data/assets/uibars/3hp.png", 2f),
@@ -15,11 +15,12 @@ public class Enemy extends Walker {
         new BodyImage("data/assets/uibars/5hp.png", 2f),
     };
     private StaticBody healthbar;
+    private final Shape shape = new CircleShape(1.0f);
 
     public Enemy(Level world, Vec2 position) {
         //Shape shape = new BoxShape(1, 2);
-        Shape shape = new CircleShape(1.0f);
-        super(world, shape);
+
+        super(world, new CircleShape(1.0f));
         // Remove this later to create more enemy types that extends this class
         this.addImage(new BodyImage("data/assets/player/character.png", 4));
         this.addCollisionListener(new EnemyCollisionListener(this));
@@ -27,6 +28,13 @@ public class Enemy extends Walker {
         this.healthbar = new StaticBody(world);
         healthbar.addImage(healthImages[health - 1]);
         
+    }
+
+    @Override
+    public void jump(float speed) {
+
+        this.setLinearVelocity(new Vec2(this.getLinearVelocity().x, 0));
+        this.applyImpulse(new Vec2(this.getLinearVelocity().x, speed));
     }
 
     @Override

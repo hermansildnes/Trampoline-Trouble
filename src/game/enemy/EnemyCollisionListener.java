@@ -15,11 +15,12 @@ public class EnemyCollisionListener implements CollisionListener {
     @Override
     public void collide(CollisionEvent e) {
 
-        if (e.getOtherBody() instanceof Trampoline) {
-            enemy.jump(20);
-        }
+        // if (e.getOtherBody() instanceof Trampoline) {
+        //     enemy.jump(20);
+        // }
 
         if (e.getOtherBody() instanceof Ground) {
+            enemy.getHealthbar().destroy();
             enemy.destroy();
         }
     }

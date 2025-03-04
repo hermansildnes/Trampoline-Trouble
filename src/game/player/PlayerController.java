@@ -1,9 +1,12 @@
 package game.player;
 
+import java.awt.Toolkit;
+
 import org.jbox2d.common.Vec2;
 
 import city.cs.engine.StepEvent;
 import city.cs.engine.StepListener;
+import city.cs.engine.UserView;
 import game.KeyHandler;
 import game.MouseHandler;
 
@@ -11,11 +14,13 @@ public class PlayerController implements StepListener {
     private Player player;
     private KeyHandler keyHandler;
     private MouseHandler mouseHandler;
+    private UserView view;
 
-    public PlayerController(Player player, KeyHandler keyHandler, MouseHandler mouseHandler) {
+    public PlayerController(Player player, KeyHandler keyHandler, MouseHandler mouseHandler, UserView view) {
         this.player = player;
         this.keyHandler = keyHandler;
         this.mouseHandler = mouseHandler;
+        this.view = view;
     
     
     }
@@ -29,7 +34,7 @@ public class PlayerController implements StepListener {
             player.setLinearVelocity(new Vec2(7.5f, player.getLinearVelocity().y));
         }
         if (keyHandler.sPressed) {
-            player.applyImpulse(new Vec2(0,-15f));
+            player.applyImpulse(new Vec2(0f, -15f));
         }
         if (mouseHandler.mouseClicked) {
             if (player.hasEquipment()) {
@@ -44,17 +49,18 @@ public class PlayerController implements StepListener {
 
         // Target logic
         Vec2 playerPos = player.getPosition();
-        Vec2 mousePos = mouseHandler.mousePosition;
-        Vec2 difference = mousePos.sub(playerPos);
+        Vec2 difference = mouseHandler.mousePosition.sub(playerPos);
         if (difference.length() > 8) {
             difference.normalize();
             difference.mulLocal(8);
         }
         player.getTarget().setPosition(playerPos.add(difference));
+
     }
 
     @Override
     public void postStep(StepEvent e) {
+        Toolkit.getDefaultToolkit().sync();
     }
     
 }
