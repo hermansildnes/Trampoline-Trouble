@@ -34,8 +34,9 @@ public class PlayerController implements StepListener {
             player.setLinearVelocity(new Vec2(7.5f, player.getLinearVelocity().y));
         }
         if (keyHandler.sPressed) {
-            player.applyImpulse(new Vec2(0f, -15f));
-        }
+            if (player.getLinearVelocity().y > -10f) {
+                player.applyImpulse(new Vec2(0f, -15f));
+        }}
         if (mouseHandler.mouseClicked) {
             if (player.hasEquipment()) {
                 player.useEquipment(mouseHandler.mousePosition);

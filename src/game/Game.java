@@ -25,8 +25,7 @@ public class Game {
         Level1 world = new Level1();
         GameView view = new GameView(world, 800, 600);
 
-        world.getSimulationSettings();
-
+        
         keyHandler = new KeyHandler();
         mouseHandler = new MouseHandler(view);
         playerController = new PlayerController(world.getPlayer(), keyHandler, mouseHandler, view);

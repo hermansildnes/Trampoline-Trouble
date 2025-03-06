@@ -20,12 +20,8 @@ public class PlayerCollisionListener implements CollisionListener {
     public void collide(CollisionEvent e) {
 
         if (e.getOtherBody() instanceof Enemy) {
+            player.decreaseHealth(1);
         }
-
-        // if (e.getOtherBody() instanceof Trampoline) {
-        //     player.jump(20);
-
-        // }
 
         if (e.getOtherBody() instanceof Ground) {
             player.startAnimation(Player.AnimationState.DEATH);

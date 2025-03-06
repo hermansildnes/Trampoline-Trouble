@@ -19,6 +19,7 @@ import game.player.equipments.LaserGun;
 import game.worlds.Level;
 
 public class Player extends DynamicBody {
+   private int health = 5;
    private BodyImage targetImage = new BodyImage("data/assets/player/target.png", 1.5f);
    private StaticBody target;
    private Equipment equipment;
@@ -137,16 +138,30 @@ public class Player extends DynamicBody {
          case LASERGUN:
             this.equipment = new LaserGun(this);
             break;
+
+         case HEALTHPACK:
+            if (this.health < 5) {
+               this.health++;
+            }
+            break;
       }
    }
 
    public boolean hasEquipment() {
       return equipment != null;
    }
+   public Equipment getEquipment() {
+      return equipment;
+   }
 
    public void useEquipment(Vec2 mousePosition) {
       if (equipment != null) {
+         if (equipment.getAmmunition() <= 0) {
+            equipment.use(mousePosition);
+            equipment = null;
+         } else {
          equipment.use(mousePosition);
+         }
       }
    }
 
@@ -156,6 +171,20 @@ public class Player extends DynamicBody {
    }
 
    public StaticBody getTarget() {
-      return target;
+      return this.target;
+   }
+
+   public int getHealth() {
+      return this.health;
+   }
+
+   public void decreaseHealth(int damage) {
+      if (this.health - damage <= 0) {
+         System.out.println("Player destroyed");
+         target.destroy();
+         this.destroy();
+      } else {
+         this.health -= damage;
+      }
    }
 }

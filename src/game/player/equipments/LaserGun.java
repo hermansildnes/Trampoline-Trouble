@@ -1,5 +1,8 @@
 package game.player.equipments;
 
+import java.awt.Image;
+import javax.swing.ImageIcon;
+
 import java.util.ArrayList;
 
 import org.jbox2d.common.Vec2;
@@ -7,17 +10,18 @@ import org.jbox2d.common.Vec2;
 import game.enemy.Enemy;
 import game.player.Player;
 
-public class LaserGun implements Equipment {
-    private Player player;
-    private ArrayList<Enemy> enemies;
+public class LaserGun extends Equipment {
 
     public LaserGun(Player player) {
-        this.player = player;
-        this.enemies = player.getWorld().getEnemies();
+        super(player);
+        this.ammunition = 5;
+        this.icon = new ImageIcon("data/assets/environment/collectibles/lasergun.png").getImage();
+    
     }
 
     @Override
     public void use(Vec2 mousePosition) {
+        ammunition--;
         float enemyRadius = 1.0f;
         System.out.println("Shooting at " + mousePosition);
         Vec2 playerPosition = player.getPosition();
@@ -38,4 +42,5 @@ public class LaserGun implements Equipment {
             }
         }
     }
+
 }

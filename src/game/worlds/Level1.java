@@ -21,6 +21,7 @@ public class Level1 extends Level {
         this.player = new Player(this, new Vec2(0, -8));
 
         this.collectibles.add(new Collectible(this, new Vec2(10, -5), Collectible.CollectibleType.LASERGUN));
+        this.collectibles.add(new Collectible(this, new Vec2(-10, 10), Collectible.CollectibleType.HEALTHPACK));
 
         this.trampolines = new ArrayList<Trampoline>();
         trampolines.add(new Trampoline(this, ground));
@@ -36,4 +37,5 @@ public class Level1 extends Level {
         }
 
     }
+
 }

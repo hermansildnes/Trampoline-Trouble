@@ -14,6 +14,7 @@ public class Collectible extends StaticBody{
     private Sensor sensor;
     public enum CollectibleType {
         LASERGUN,
+        HEALTHPACK,
     }
     private CollectibleType collectibleType;
 

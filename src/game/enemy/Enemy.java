@@ -18,9 +18,9 @@ public class Enemy extends Walker {
     private final Shape shape = new CircleShape(1.0f);
 
     public Enemy(Level world, Vec2 position) {
-        //Shape shape = new BoxShape(1, 2);
+        super(world, new BoxShape(1f, 2f));
 
-        super(world, new CircleShape(1.0f));
+       //super(world, new CircleShape(1.0f));
         // Remove this later to create more enemy types that extends this class
         this.addImage(new BodyImage("data/assets/player/character.png", 4));
         this.addCollisionListener(new EnemyCollisionListener(this));
@@ -34,7 +34,8 @@ public class Enemy extends Walker {
     public void jump(float speed) {
 
         this.setLinearVelocity(new Vec2(this.getLinearVelocity().x, 0));
-        this.applyImpulse(new Vec2(this.getLinearVelocity().x, speed));
+        //this.applyImpulse(new Vec2(this.getLinearVelocity().x, speed));
+        this.setLinearVelocity(new Vec2(this.getLinearVelocity().x, speed));
     }
 
     @Override

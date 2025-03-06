@@ -15,24 +15,13 @@ public class TrampolineSensorListener implements SensorListener {
     public void beginContact(SensorEvent e) {
         if (e.getContactBody() instanceof Player) {
             Player player = (Player) e.getContactBody();
-            
-            // Only trigger the jump if the player is moving downward
-            if (player.getLinearVelocity().y <= 0) {
-                player.jump(200);
+            player.jump(200);
                 
-                // Debug to verify collisions
-                System.out.println("Trampoline collision detected with player");
-            }
         }
         if (e.getContactBody() instanceof Enemy) {
             Enemy enemy = (Enemy) e.getContactBody();
-            if (enemy.getLinearVelocity().y <= 0) {
-                enemy.jump(200);
-                
-                // Debug to verify collisions
-                System.out.println("Trampoline collision detected with enemy");
+            enemy.jump(20);   
             }
-        }
     }
 
     @Override
