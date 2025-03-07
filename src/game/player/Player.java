@@ -1,43 +1,23 @@
 package game.player;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.jbox2d.common.Vec2;
 
-import city.cs.engine.Body;
 import city.cs.engine.BodyImage;
-import city.cs.engine.DynamicBody;
 import city.cs.engine.PolygonShape;
 import city.cs.engine.Shape;
 import city.cs.engine.StaticBody;
+import game.Animatable;
 import game.environment.collectibles.Collectible;
 import game.player.equipments.Equipment;
 import game.player.equipments.LaserGun;
 import game.worlds.Level;
 
-public class Player extends DynamicBody {
+public class Player extends Animatable {
    private int health = 5;
-   private BodyImage targetImage = new BodyImage("data/assets/player/target.png", 1.5f);
+   private BodyImage targetImage = new BodyImage("data/assets/player/extras/target.png", 1.5f);
    private StaticBody target;
    private Equipment equipment;
-   private static final String assetPath = "data/assets/player/hooded/";
-   private static final int  FRAMES_PER_ANIMATION = 4;
-   public enum AnimationState {
-      NEUTRAL,
-      JUMP,
-      DEATH
-   }
-
-   private static final BodyImage neutral = new BodyImage(assetPath + "neutral.png", 4);;
-
-   private Map<AnimationState, BodyImage[]> animations;
-   private AnimationState currentState = AnimationState.NEUTRAL;
-   private boolean isAnimating = false;
-   private int currentFrame = 0;
-   private int frameCounter = 0;
+   
    private static final Shape PLAYER_SHAPE = new PolygonShape(
       -0.81f, -2.1f,   // Bottom left (slightly lower)
       -1.33f, -0.8f,   // Left side
@@ -50,88 +30,26 @@ public class Player extends DynamicBody {
    );
 
    public Player(Level world, Vec2 position) {
-      super(world, PLAYER_SHAPE);
-         animations = new HashMap<>();
-         animations.put(AnimationState.JUMP, loadAnimation("jump", 8));
-         animations.put(AnimationState.DEATH, loadAnimation("death", 4));
-         this.addImage(neutral);
-         this.addCollisionListener(new PlayerCollisionListener(this));
-         this.setPosition(position);
+      super(world, PLAYER_SHAPE, "data/assets/player/");
+      this.addCollisionListener(new PlayerCollisionListener(this));
+      this.setPosition(position);
 
-         this.target = new StaticBody(world);
-         target.addImage(targetImage);
+      addAnimation(AnimationState.JUMP, "jump", 8);
+      addAnimation(AnimationState.DEATH, "death", 4);
+      addAnimation(AnimationState.ATTACK, "attack", 8);
 
+      this.target = new StaticBody(world);
+      target.addImage(targetImage);
 
-      // Workaround to call the setFixedRotation method from the Body class, which is package-private
-      try {
-         Field f = Body.class.getDeclaredField("b2body");
-         f.setAccessible(true);
-         Object b2body = f.get(this);
-         b2body.getClass().getDeclaredMethod("setFixedRotation", boolean.class).invoke(b2body, true);
-      } catch (NoSuchFieldException | SecurityException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-         e.printStackTrace();
-      }
     }
 
-    // Jump method ripped from the Walker class in city.cs.engine
-   public void jump(float speed) {
-      this.setLinearVelocity(new Vec2(this.getLinearVelocity().x, 0));
-      this.applyImpulse(new Vec2(this.getLinearVelocity().x, speed));
-      }
+    @Override
+    public void jump(float speed) {
 
-   private BodyImage[] loadAnimation(String prefix, int frameCount) {
-      BodyImage[] frames = new BodyImage[frameCount];
-      for (int i = 0; i < frameCount; i++) {
-         frames[i] = new BodyImage(assetPath + prefix + i + ".png", 4);
-      }
-      return frames;
-   }
-
-   public void startAnimation(AnimationState state) {
-      currentState = state;
-      isAnimating = true;
-      currentFrame = 0;
-      frameCounter = 0;
-      updateAnimation();
-   }
-
-   private void updateAnimation() {
-      if (currentState == AnimationState.NEUTRAL || !isAnimating) {
-         this.removeAllImages();
-         this.addImage(neutral);
-         return;
-      }
-
-      BodyImage[] currentAnimation = animations.get(currentState);
-      if (currentFrame < currentAnimation.length) {
-         this.removeAllImages();
-         this.addImage(currentAnimation[currentFrame]);
-      } else {
-         isAnimating = false;
-         this.removeAllImages();
-         this.addImage(neutral);
-      }
-   }
-
-   public void incrementFrameCounter() {
-      if (!isAnimating) return;
-
-      frameCounter++;
-      if (frameCounter == FRAMES_PER_ANIMATION) {
-         frameCounter = 0;
-         currentFrame++;
-         updateAnimation();
-      }
-   }
-
-   public AnimationState getCurrentState() {
-      return currentState;
-   }
-
-   public boolean isAnimating() {
-      return isAnimating;
-   }
-
+        this.setLinearVelocity(new Vec2(this.getLinearVelocity().x, 0));
+        //this.applyImpulse(new Vec2(this.getLinearVelocity().x, speed));
+        this.setLinearVelocity(new Vec2(this.getLinearVelocity().x, speed));
+    }
 
    public void setEquipment(Collectible.CollectibleType collectibleType) {
       switch (collectibleType) {

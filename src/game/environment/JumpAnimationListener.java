@@ -4,8 +4,9 @@ import city.cs.engine.CollisionEvent;
 import city.cs.engine.CollisionListener;
 import city.cs.engine.SensorEvent;
 import city.cs.engine.SensorListener;
+import game.Animatable.AnimationState;
+import game.enemy.Enemy;
 import game.player.Player;
-import game.player.Player.AnimationState;
 
 public class JumpAnimationListener implements SensorListener {
 
@@ -18,6 +19,14 @@ public class JumpAnimationListener implements SensorListener {
             Player player = (Player) e.getContactBody();
             if (player.getLinearVelocity().y <= 0) {
                 player.startAnimation(AnimationState.JUMP);
+               System.out.println("Trampoline animation triggered");
+
+            }
+        }
+        else if (e.getContactBody() instanceof Enemy) {
+            Enemy enemy = (Enemy) e.getContactBody();
+            if (enemy.getLinearVelocity().y <= 0) {
+                enemy.startAnimation(AnimationState.JUMP);
                System.out.println("Trampoline animation triggered");
 
             }

@@ -44,7 +44,9 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        
         mousePosition = view.viewToWorld(e.getPoint());
+        
     }
 
 

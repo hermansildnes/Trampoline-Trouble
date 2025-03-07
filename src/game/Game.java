@@ -49,7 +49,7 @@ public class Game {
         view.requestFocusInWindow();
 
         //optional: uncomment this to make a debugging view
-         JFrame debugView = new DebugViewer(world, 800, 600);
+         //JFrame debugView = new DebugViewer(world, 800, 600);
 
         world.start();
     }

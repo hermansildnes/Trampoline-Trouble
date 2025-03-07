@@ -9,6 +9,7 @@ import city.cs.engine.StepListener;
 import city.cs.engine.UserView;
 import game.KeyHandler;
 import game.MouseHandler;
+import game.Animatable.AnimationState;
 
 public class PlayerController implements StepListener {
     private Player player;
@@ -40,8 +41,15 @@ public class PlayerController implements StepListener {
         if (mouseHandler.mouseClicked) {
             if (player.hasEquipment()) {
                 player.useEquipment(mouseHandler.mousePosition);
+                player.startAnimation(AnimationState.ATTACK);
             mouseHandler.mouseClicked = false;
+            }
         }
+
+        if (mouseHandler.mousePosition.x < player.getPosition().x) {
+            player.setFacingLeft(true);
+        } else {
+            player.setFacingLeft(false);
         }
 
         if (player.isAnimating()) {

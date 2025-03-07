@@ -74,7 +74,17 @@ public class EnemyController implements StepListener {
         float smoothedVelocityX = currentVelocityX + (targetVelocity - currentVelocityX) * smoothFactor;
         
         enemy.setLinearVelocity(new Vec2(smoothedVelocityX, enemy.getLinearVelocity().y));
-    }
+    
+        if (enemy.getPosition().x < player.getPosition().x) {
+            enemy.setFacingLeft(false);
+        } else {
+            enemy.setFacingLeft(true);
+        }
+
+        if (enemy.isAnimating()) {
+            enemy.incrementFrameCounter();
+        }
+}
 
     @Override
     public void postStep(StepEvent e) {

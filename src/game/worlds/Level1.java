@@ -13,28 +13,23 @@ import game.player.Player;
 
 public class Level1 extends Level {
 
+    private WaveController waveController;
+
     public Level1() {
         super();
         Ground ground = new Ground(this, new Vec2(0f, -14f));
-        this.enemies = new ArrayList<Enemy>();
-
-        this.player = new Player(this, new Vec2(0, -8));
-
-        this.collectibles.add(new Collectible(this, new Vec2(10, -5), Collectible.CollectibleType.LASERGUN));
-        this.collectibles.add(new Collectible(this, new Vec2(-10, 10), Collectible.CollectibleType.HEALTHPACK));
-
         this.trampolines = new ArrayList<Trampoline>();
         trampolines.add(new Trampoline(this, ground));
         trampolines.add(new Trampoline(this, 10, ground));
         trampolines.add(new Trampoline(this, -10, ground));
 
-        ArrayList<EnemyController> enemyControllers = new ArrayList<EnemyController>();
-        enemies.add(new Enemy(this, new Vec2(-10, 0)));
-        for (Enemy enemy : enemies) {
-            EnemyController enemyController = new EnemyController(enemy);
-            enemyControllers.add(enemyController);
-            this.addStepListener(enemyController);
-        }
+        this.enemies = new ArrayList<Enemy>();
+        this.collectibles = new ArrayList<Collectible>();
+        this.player = new Player(this, new Vec2(0, -8));
+
+        // Initialize and add the wave controller
+        waveController = new WaveController(this);
+        this.addStepListener(waveController);
 
     }
 
