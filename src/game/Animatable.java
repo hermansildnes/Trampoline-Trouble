@@ -22,7 +22,8 @@ public abstract class Animatable extends Walker{
       JUMP,
       DEATH,
       FALL,
-      ATTACK
+      ATTACK,
+      DAMAGE
    }
    
    private Map<String, Map<AnimationState, BodyImage[]>> directionAnimations;

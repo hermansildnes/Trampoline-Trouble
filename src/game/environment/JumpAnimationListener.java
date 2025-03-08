@@ -1,7 +1,5 @@
 package game.environment;
 
-import city.cs.engine.CollisionEvent;
-import city.cs.engine.CollisionListener;
 import city.cs.engine.SensorEvent;
 import city.cs.engine.SensorListener;
 import game.Animatable.AnimationState;

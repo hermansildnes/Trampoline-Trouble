@@ -6,20 +6,19 @@ import city.cs.engine.CollisionEvent;
 import city.cs.engine.CollisionListener;
 import game.enemy.Enemy;
 import game.environment.Ground;
-import game.environment.Trampoline;
 
 public class PlayerCollisionListener implements CollisionListener {
     private Player player;
 
     public PlayerCollisionListener(Player player) {
         this.player = player;
-
+        
     }
 
     @Override
     public void collide(CollisionEvent e) {
 
-        if (e.getOtherBody() instanceof Enemy) {
+        if (e.getOtherBody() instanceof Enemy) {            
             player.decreaseHealth(1);
         }
 
@@ -36,7 +35,7 @@ public class PlayerCollisionListener implements CollisionListener {
 
                         }
                     },
-                    4 * 4 * 16  // frames * steps per frame * milliseconds per step
+                    4 * 4 * 16  // frames per animation * steps per frame * milliseconds per step
             );
         }
     }

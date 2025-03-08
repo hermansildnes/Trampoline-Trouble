@@ -15,11 +15,11 @@ public class Enemy extends Animatable {
         new BodyImage("data/assets/uibars/4hp.png", 2f),
         new BodyImage("data/assets/uibars/5hp.png", 2f),
     };
+    private boolean pathFinding = true;
     private StaticBody healthbar;
-    private final Shape shape = new CircleShape(1.0f);
 
     public Enemy(Level world, Vec2 position) {
-        super(world, new BoxShape(1f, 2f), "data/assets/enemy/");
+        super(world, new CircleShape(1f), "data/assets/enemy/");
 
        //super(world, new CircleShape(1.0f));
         // Remove this later to create more enemy types that extends this class
@@ -27,6 +27,7 @@ public class Enemy extends Animatable {
         this.setPosition(position);
         addAnimation(AnimationState.JUMP, "jump", 4);
         addAnimation(AnimationState.DEATH, "death", 10);
+        addAnimation(AnimationState.DAMAGE, "damage", 4);
 
         this.healthbar = new StaticBody(world);
         healthbar.addImage(healthImages[health - 1]);
@@ -48,12 +49,28 @@ public class Enemy extends Animatable {
 
     public void decreaseHealth(int damage) {
         if (this.health - damage <= 0) {
+            Enemy enemy = this;
+            StaticBody healthbar = this.healthbar;
+            startAnimation(AnimationState.DEATH);
             System.out.println("Enemy destroyed");
+            this.setLinearVelocity(new Vec2(0, 0));
             healthbar.destroy();
-            this.destroy();
+
+            new java.util.Timer().schedule(
+                new java.util.TimerTask() {
+                    @Override
+                    public void run() {
+                        enemy.destroy();
+
+
+                    }
+                },
+                10 * 4 * 16  // frames * steps per frame * milliseconds per step
+        );
 
         } else{
             this.health -= damage;
+            startAnimation(AnimationState.DAMAGE);
             healthbar.removeAllImages();
             healthbar.addImage(healthImages[health - 1]);
         }
@@ -69,5 +86,12 @@ public class Enemy extends Animatable {
 
     public StaticBody getHealthbar() {
         return healthbar;
+    }
+
+    public void setPathFinding(boolean pathFinding) {
+        this.pathFinding = pathFinding;
+    }
+    public boolean getPathFinding() {
+        return pathFinding;
     }
 }

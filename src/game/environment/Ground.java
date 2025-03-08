@@ -4,13 +4,10 @@ import org.jbox2d.common.Vec2;
 
 import city.cs.engine.BodyImage;
 import city.cs.engine.BoxShape;
-import city.cs.engine.Shape;
 import city.cs.engine.StaticBody;
 import city.cs.engine.World;
 
 public class Ground extends StaticBody{
-
-    private final Shape shape = new BoxShape(20f, 1f);
 
     public Ground(World world, Vec2 position) {
 

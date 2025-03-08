@@ -10,22 +10,24 @@ import game.environment.collectibles.Collectible.CollectibleType;
 import org.jbox2d.common.Vec2;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class WaveController implements StepListener {
     private Level level;
     private ArrayList<Enemy> enemies;
-    private int currentWave = 10;
-    private float timer = 0.01F;
+    private ArrayList<Collectible> collectibles;
+    private int currentWave = 0;
+    private float timer = 10f;
     private static final float WAVE_INTERVAL = 15f;
     private Random random = new Random();
+    private static final float COLLECTIBLE_INTERVAL = 5f;
+    private float lastCollectibleSpawnTime = 0f;
     
-    private float collectibleChance = 0.75f; // 50% chance per wave to spawn a collectible
     
     public WaveController(Level level) {
         this.level = level;
         this.enemies = level.getEnemies();
+        this.collectibles = level.getCollectibles();
     }
     
     @Override
@@ -33,36 +35,27 @@ public class WaveController implements StepListener {
         timer += e.getStep();
         enemies = level.getEnemies();
 
-        if (timer >= WAVE_INTERVAL) {
-            currentWave++;
-            System.out.println("Wave " + currentWave + " has started!");
-            spawnWave();
-            timer = 0;
-        }
-            if (timer % 2<=0.1f) {
-                if (enemies != null) {
-                    System.out.println(timer);
-                }
+        if (currentWave <= 4) {
+            if (timer - lastCollectibleSpawnTime >= COLLECTIBLE_INTERVAL) {
+                spawnCollectibles();
+                lastCollectibleSpawnTime = timer;
+            }
+
+            if (timer >= WAVE_INTERVAL) {
+                currentWave++;
+                System.out.println("Wave " + currentWave + " has started!");
+                spawnEnemies(1);
+                timer = 0;
+            } 
         }
     }
     
     @Override
     public void postStep(StepEvent e) {
-        // Not needed for this implementation
-    }
-
-    private void spawnWave() {
-        int enemiesToSpawn = 2;
-        spawnEnemies(enemiesToSpawn);
-        
-        if (random.nextFloat() < collectibleChance) {
-        spawnCollectibles();
-        }
     }
 
     private void spawnEnemies(int enemiesToSpawn) {
         for (int i = 0; i < enemiesToSpawn; i++) {
-            float xPos = random.nextInt(20) - 10;
             Enemy enemy = new Enemy(level, new Vec2(random.nextInt(20) - 10, 10));
             level.addStepListener(new EnemyController(enemy));
             enemies.add(enemy);
@@ -70,6 +63,11 @@ public class WaveController implements StepListener {
     }
 
     private void spawnCollectibles() {
-        Collectible collectible = new Collectible(level, new Vec2(random.nextInt(20) - 10, 10), CollectibleType.LASERGUN);
+        if (random.nextInt(4) < 3) {
+            System.out.println("Spawning healthpack");
+        collectibles.add(new Collectible(level, new Vec2(random.nextInt(20) - 10, random.nextInt(10)-5), CollectibleType.HEALTHPACK));
+        // } else {
+        // Collectible collectible = new Collectible(level, new Vec2(random.nextInt(20) - 10, 10), CollectibleType.LASERGUN);
+        }
     }
 }

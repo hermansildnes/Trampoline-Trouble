@@ -1,9 +1,5 @@
 package game.environment;
 
-import org.jbox2d.common.Vec2;
-
-import city.cs.engine.CollisionEvent;
-import city.cs.engine.CollisionListener;
 import city.cs.engine.SensorEvent;
 import city.cs.engine.SensorListener;
 import game.enemy.Enemy;
@@ -20,7 +16,7 @@ public class TrampolineSensorListener implements SensorListener {
         }
         if (e.getContactBody() instanceof Enemy) {
             Enemy enemy = (Enemy) e.getContactBody();
-            enemy.jump(20);   
+            enemy.jump(15);   
             }
     }
 

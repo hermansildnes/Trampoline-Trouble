@@ -7,9 +7,7 @@ import java.awt.geom.AffineTransform;
 import javax.swing.ImageIcon;
 
 import city.cs.engine.UserView;
-import game.environment.collectibles.Collectible;
 import game.worlds.Level;
-import game.worlds.Level1;
 
 public class GameView extends UserView {
     private Level world;

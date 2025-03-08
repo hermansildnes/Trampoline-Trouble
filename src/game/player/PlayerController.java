@@ -6,7 +6,6 @@ import org.jbox2d.common.Vec2;
 
 import city.cs.engine.StepEvent;
 import city.cs.engine.StepListener;
-import city.cs.engine.UserView;
 import game.KeyHandler;
 import game.MouseHandler;
 import game.Animatable.AnimationState;
@@ -15,13 +14,11 @@ public class PlayerController implements StepListener {
     private Player player;
     private KeyHandler keyHandler;
     private MouseHandler mouseHandler;
-    private UserView view;
 
-    public PlayerController(Player player, KeyHandler keyHandler, MouseHandler mouseHandler, UserView view) {
+    public PlayerController(Player player, KeyHandler keyHandler, MouseHandler mouseHandler) {
         this.player = player;
         this.keyHandler = keyHandler;
         this.mouseHandler = mouseHandler;
-        this.view = view;
     
     
     }

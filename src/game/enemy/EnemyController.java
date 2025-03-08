@@ -16,11 +16,10 @@ public class EnemyController implements StepListener {
     private Trampoline closestTrampoline;
 
     // Experimental
-    private float movementSpeed = 5f;
-    private float currentVelocityX = 0;
-    private float acceleration = 2.5f;
+    private float movementSpeed = 4f;
     private float smoothFactor = 0.25f;    
-    
+    float targetVelocity = 0;
+
         public EnemyController(Enemy enemy) {
             this.enemy = enemy;
             this.player = enemy.getWorld().getPlayer();
@@ -29,7 +28,18 @@ public class EnemyController implements StepListener {
 
     @Override
     public void preStep(StepEvent e) {
-        enemy.getHealthbar().setPosition(enemy.getPosition().add(new Vec2(0, 3f)));
+        enemy.getHealthbar().setPosition(enemy.getPosition().add(new Vec2(0, 2f)));
+        
+        // Set animation direction and update animation
+        if (enemy.getPosition().x < player.getPosition().x) {
+            enemy.setFacingLeft(false);
+        } else {
+            enemy.setFacingLeft(true);
+        }
+
+        if (enemy.isAnimating()) {
+            enemy.incrementFrameCounter();
+        }
 
         // Calculate closest trampoline
         for (Trampoline trampoline: trampolines) {
@@ -49,16 +59,15 @@ public class EnemyController implements StepListener {
         float distanceToTrampolineX = Math.abs(enemy.getPosition().x - closestTrampoline.getPosition().x);
         double timeToReachTrampolineX = distanceToTrampolineX / this.movementSpeed;
 
-        // Experimental
-        float targetVelocity = 0;
-
+        // Pathfind to nearest trampoline if neccessarry to survive
         if (timeToReachTrampolineY <= timeToReachTrampolineX+0.3 && enemy.getLinearVelocity().y <= 0) {
             if (enemy.getPosition().x < closestTrampoline.getPosition().x) {
-                targetVelocity = this.movementSpeed;
+                enemy.setLinearVelocity(new Vec2(this.movementSpeed, enemy.getLinearVelocity().y));
             } else if (enemy.getPosition().x > closestTrampoline.getPosition().x) {
-                targetVelocity = -this.movementSpeed;
+                enemy.setLinearVelocity(new Vec2(-this.movementSpeed, enemy.getLinearVelocity().y));
             }
-        } else {
+            // Otherwise, pathfind to player
+        } else if (enemy.getPathFinding()) {
             if (enemy.getPosition().x < player.getPosition().x) {
                 targetVelocity = this.movementSpeed;
             } else if (enemy.getPosition().x > player.getPosition().x) {
@@ -66,24 +75,9 @@ public class EnemyController implements StepListener {
             }
         }
 
-        // Smooth velocity transition
-        float deltaVelocity = targetVelocity - currentVelocityX;
-        currentVelocityX += deltaVelocity * acceleration * e.getStep();
-        
-        // Linear interpolation smoothing
-        float smoothedVelocityX = currentVelocityX + (targetVelocity - currentVelocityX) * smoothFactor;
-        
+        float smoothedVelocityX = enemy.getLinearVelocity().x + (targetVelocity - enemy.getLinearVelocity().x) * smoothFactor;
         enemy.setLinearVelocity(new Vec2(smoothedVelocityX, enemy.getLinearVelocity().y));
-    
-        if (enemy.getPosition().x < player.getPosition().x) {
-            enemy.setFacingLeft(false);
-        } else {
-            enemy.setFacingLeft(true);
-        }
-
-        if (enemy.isAnimating()) {
-            enemy.incrementFrameCounter();
-        }
+ 
 }
 
     @Override

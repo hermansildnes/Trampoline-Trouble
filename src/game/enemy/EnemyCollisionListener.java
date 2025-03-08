@@ -3,7 +3,7 @@ package game.enemy;
 import city.cs.engine.CollisionEvent;
 import city.cs.engine.CollisionListener;
 import game.environment.Ground;
-import game.environment.Trampoline;
+import game.player.Player;
 
 public class EnemyCollisionListener implements CollisionListener {
     private Enemy enemy;
@@ -15,9 +15,18 @@ public class EnemyCollisionListener implements CollisionListener {
     @Override
     public void collide(CollisionEvent e) {
 
-        // if (e.getOtherBody() instanceof Trampoline) {
-        //     enemy.jump(20);
-        // }
+        if (e.getOtherBody() instanceof Player) {
+            enemy.setPathFinding(false);
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            enemy.setPathFinding(true);
+                        }
+                    },
+                    1000
+            );
+        }
 
         if (e.getOtherBody() instanceof Ground) {
             enemy.getHealthbar().destroy();
