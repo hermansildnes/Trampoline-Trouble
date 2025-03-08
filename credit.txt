@@ -1,0 +1,10 @@
+Player sprites:
+Graphics created by Penzilla Design
+
+Background image:
+Graphics by vnitti
+https://vnitti.itch.io/glacial-mountains-parallax-background
+
+Enemy sprites:
+CC BY 4.0
+https://lucky-loops.itch.io/character-satyr
