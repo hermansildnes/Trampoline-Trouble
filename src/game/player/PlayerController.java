@@ -10,10 +10,11 @@ import game.KeyHandler;
 import game.MouseHandler;
 import game.Animatable.AnimationState;
 
+/* Controller for the player, implementing movement, animation and the players target */
 public class PlayerController implements StepListener {
-    private Player player;
-    private KeyHandler keyHandler;
-    private MouseHandler mouseHandler;
+    private final Player player;
+    private final KeyHandler keyHandler;
+    private final MouseHandler mouseHandler;
 
     public PlayerController(Player player, KeyHandler keyHandler, MouseHandler mouseHandler) {
         this.player = player;
@@ -25,6 +26,7 @@ public class PlayerController implements StepListener {
 
     @Override
     public void preStep(StepEvent e) {
+        // Move based on keys pressed
         if (keyHandler.aPressed) {
             player.setLinearVelocity(new Vec2(-7.5f, player.getLinearVelocity().y));
         }
@@ -35,6 +37,7 @@ public class PlayerController implements StepListener {
             if (player.getLinearVelocity().y > -10f) {
                 player.applyImpulse(new Vec2(0f, -15f));
         }}
+        // use equipment if mouse clicked
         if (mouseHandler.mouseClicked) {
             if (player.hasEquipment()) {
                 player.useEquipment(mouseHandler.mousePosition);
@@ -42,18 +45,19 @@ public class PlayerController implements StepListener {
             mouseHandler.mouseClicked = false;
             }
         }
-
+        // Change sprite animation direction to face the mouse/target
         if (mouseHandler.mousePosition.x < player.getPosition().x) {
             player.setFacingLeft(true);
         } else {
             player.setFacingLeft(false);
         }
 
+        // Update animation
         if (player.isAnimating()) {
             player.incrementFrameCounter();
         }
 
-        // Target logic
+        // Target logic calculating with some basic vector maths
         Vec2 playerPos = player.getPosition();
         Vec2 difference = mouseHandler.mousePosition.sub(playerPos);
         if (difference.length() > 8) {

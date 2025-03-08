@@ -6,19 +6,16 @@ import game.worlds.Level1;
 import javax.swing.JFrame;
 
 public class Game {
-    private KeyHandler keyHandler;
-    private MouseHandler mouseHandler;
-    private PlayerController playerController;
 
     public Game() {
 
         Level1 world = new Level1();
         GameView view = new GameView(world, 800, 600);
 
-      
-        keyHandler = new KeyHandler();
-        mouseHandler = new MouseHandler(view);
-        playerController = new PlayerController(world.getPlayer(), keyHandler, mouseHandler);
+
+        KeyHandler keyHandler = new KeyHandler();
+        MouseHandler mouseHandler = new MouseHandler(view);
+        PlayerController playerController = new PlayerController(world.getPlayer(), keyHandler, mouseHandler);
         world.addStepListener(playerController);
         view.addKeyListener(keyHandler);
         view.addMouseMotionListener(mouseHandler);
@@ -35,7 +32,6 @@ public class Game {
         view.setFocusable(true);
         view.requestFocusInWindow();
 
-        //optional: uncomment this to make a debugging view
          //JFrame debugView = new DebugViewer(world, 800, 600);
 
         world.start();

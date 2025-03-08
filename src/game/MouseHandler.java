@@ -8,7 +8,7 @@ import java.awt.event.MouseEvent;
 
 public class MouseHandler implements MouseListener, MouseMotionListener {
     public Vec2 mousePosition;
-    private GameView view; 
+    private final GameView view;
     public boolean mouseClicked;
 
     public MouseHandler(GameView view) {

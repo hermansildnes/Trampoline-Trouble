@@ -5,7 +5,9 @@ import org.jbox2d.common.Vec2;
 import city.cs.engine.*;
 import game.Animatable;
 import game.worlds.Level;
-
+/*
+ * Generic Enemy class that specifies an enemy with health, and that can pathfind to the player
+ */
 public class Enemy extends Animatable {
     private int health = 5;
     private static final BodyImage[] healthImages = {
@@ -16,7 +18,7 @@ public class Enemy extends Animatable {
         new BodyImage("data/assets/uibars/5hp.png", 2f),
     };
     private boolean pathFinding = true;
-    private StaticBody healthbar;
+    private final StaticBody healthbar;
 
     public Enemy(Level world, Vec2 position) {
         super(world, new CircleShape(1f), "data/assets/enemy/");
@@ -34,11 +36,11 @@ public class Enemy extends Animatable {
         
     }
 
+    // Overriding the walker implementation of jump to make it more suitable for the trampolines
     @Override
     public void jump(float speed) {
 
         this.setLinearVelocity(new Vec2(this.getLinearVelocity().x, 0));
-        //this.applyImpulse(new Vec2(this.getLinearVelocity().x, speed));
         this.setLinearVelocity(new Vec2(this.getLinearVelocity().x, speed));
     }
 
@@ -46,13 +48,12 @@ public class Enemy extends Animatable {
     public Level getWorld() {
        return (Level) super.getWorld();
     }
-
     public void decreaseHealth(int damage) {
+        // Destroy the enemy if health is 0, but only after death animation has finished
         if (this.health - damage <= 0) {
             Enemy enemy = this;
             StaticBody healthbar = this.healthbar;
             startAnimation(AnimationState.DEATH);
-            System.out.println("Enemy destroyed");
             this.setLinearVelocity(new Vec2(0, 0));
             healthbar.destroy();
 
@@ -65,9 +66,10 @@ public class Enemy extends Animatable {
 
                     }
                 },
-                10 * 4 * 16  // frames * steps per frame * milliseconds per step
+                10 * 4 * 16  // frames per animation * steps per frame * milliseconds per step
         );
 
+        // Decrease health and start damage animation if enemy is not dead
         } else{
             this.health -= damage;
             startAnimation(AnimationState.DAMAGE);
@@ -91,6 +93,7 @@ public class Enemy extends Animatable {
     public void setPathFinding(boolean pathFinding) {
         this.pathFinding = pathFinding;
     }
+    
     public boolean getPathFinding() {
         return pathFinding;
     }

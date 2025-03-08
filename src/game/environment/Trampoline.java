@@ -9,38 +9,42 @@ import city.cs.engine.Sensor;
 import city.cs.engine.Shape;
 import city.cs.engine.StaticBody;
 import city.cs.engine.World;
-
+/* 
+ * Trampoline class that specifies a trampoline staticbody, with a sensor 
+ * attatched that triggers the jump animation, and a sensor that triggers jumping
+ */
 public class Trampoline extends StaticBody {
-    // private static final Shape trampolineShape = new BoxShape(2f, 0.15f);
+    // Obtained using the polygon editor
     private static final Shape trampolineShape = new PolygonShape(
-            -2.0f, -0.5f, // bottom left
-            -1.8f, -0.15f, // left edge
-            -1.5f, 0.1f, // left of center
-            0.0f, 0.3f, // center top (slightly higher)
-            1.5f, 0.1f, // right of center
-            1.8f, -0.15f, // right edge
-            2.0f, -0.5f // bottom right
+            -2.0f, -0.5f,
+            -1.8f, -0.15f,
+            -1.5f, 0.1f,
+            0.0f, 0.3f,
+            1.5f, 0.1f,
+            1.8f, -0.15f,
+            2.0f, -0.5f
     );
-
+    // Sensor shape for the sensors
     private static final Shape sensorShape = new BoxShape(1.8f, 0.2f);
 
-    private StaticBody animationTrigger;
-    private Sensor triggerSensor;
+    // Add a sensor above the trampoline that triggers jump animation
+    private final StaticBody animationTrigger;
 
     // Add a sensor at the top of the trampoline for more reliable jump detection
-    private StaticBody topSensorBody;
-    private Sensor topSensor;
+    private final StaticBody topSensorBody;
 
     public Trampoline(World world) {
         super(world, trampolineShape);
         this.addImage(new BodyImage("data/assets/environment/trampoline.png", 4));
-       // Add an additional sensor for more reliable detection
+        
+        // Add  sensor for more reliable detection
         topSensorBody = new StaticBody(world);
-        topSensor = new Sensor(topSensorBody, sensorShape);
+        Sensor topSensor = new Sensor(topSensorBody, sensorShape);
         topSensor.addSensorListener(new TrampolineSensorListener());
 
+        // Add animation triggering sensor 
         animationTrigger = new StaticBody(world);
-        triggerSensor = new Sensor(animationTrigger, sensorShape);
+        Sensor triggerSensor = new Sensor(animationTrigger, sensorShape);
         triggerSensor.addSensorListener(new JumpAnimationListener());
 
  
@@ -65,6 +69,7 @@ public class Trampoline extends StaticBody {
         this.setPosition(new Vec2(xPos, ground.getPosition().y + 3f));
     }
 
+    // Override setPosition to also set the position of the attatched sensors
     @Override
     public void setPosition(Vec2 position) {
         super.setPosition(position);

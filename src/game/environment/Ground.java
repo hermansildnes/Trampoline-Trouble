@@ -7,6 +7,9 @@ import city.cs.engine.BoxShape;
 import city.cs.engine.StaticBody;
 import city.cs.engine.World;
 
+/* 
+ * Generic ground to be expanded on later
+ */
 public class Ground extends StaticBody{
 
     public Ground(World world, Vec2 position) {

@@ -4,8 +4,12 @@ import city.cs.engine.SensorEvent;
 import city.cs.engine.SensorListener;
 import game.player.Player;
 
+
+/*
+ * Trigger the collection of a collectible when the player collides with it and destroy the collectible
+ */
 public class CollectibleSensorListener implements SensorListener {
-    private Collectible collectible;
+    private final Collectible collectible;
 
     public CollectibleSensorListener(Collectible collectible) {
         this.collectible = collectible;

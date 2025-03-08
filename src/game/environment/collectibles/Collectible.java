@@ -9,18 +9,22 @@ import city.cs.engine.Shape;
 import city.cs.engine.StaticBody;
 import game.worlds.Level;
 
+/*
+ * Collectible class that specifies the existing collectible types and allows for creation of them
+ */
 public class Collectible extends StaticBody{
     private static final Shape shape = new CircleShape(1f);
-    private Sensor sensor;
+
     public enum CollectibleType {
         LASERGUN,
         HEALTHPACK,
     }
-    private CollectibleType collectibleType;
+    private final CollectibleType collectibleType;
 
     public Collectible(Level world, Vec2 position, CollectibleType type) {
         super(world);
-        sensor = new Sensor(this, shape);
+        // Add a sensor to the collectible for collision that does not affect movement of the player
+        Sensor sensor = new Sensor(this, shape);
         sensor.addSensorListener(new CollectibleSensorListener(this));
         this.setPosition(position);
         this.collectibleType = type;

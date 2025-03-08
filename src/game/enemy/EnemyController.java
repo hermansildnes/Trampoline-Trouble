@@ -9,16 +9,21 @@ import city.cs.engine.StepListener;
 import game.environment.Trampoline;
 import game.player.Player;
 
+/*
+ * Controller for the enemy. Handles enemy movement and pathfinding.
+ * Prioritises pathfinding to nearest trampoline if necessary for survival,
+ * otherwise pathfinds to the player
+ */
+
 public class EnemyController implements StepListener {
-    private Enemy enemy;
-    private Player player;
-    private ArrayList<Trampoline> trampolines;
+    private final Enemy enemy;
+    private final Player player;
+    private final ArrayList<Trampoline> trampolines;
     private Trampoline closestTrampoline;
 
-    // Experimental
     private float movementSpeed = 4f;
-    private float smoothFactor = 0.25f;    
-    float targetVelocity = 0;
+    private float smoothFactor = 0.25f;
+    float targetVelocity;
 
         public EnemyController(Enemy enemy) {
             this.enemy = enemy;
@@ -28,6 +33,7 @@ public class EnemyController implements StepListener {
 
     @Override
     public void preStep(StepEvent e) {
+        // Sets the position of the healthbar right above the enemy
         enemy.getHealthbar().setPosition(enemy.getPosition().add(new Vec2(0, 2f)));
         
         // Set animation direction and update animation
@@ -59,7 +65,7 @@ public class EnemyController implements StepListener {
         float distanceToTrampolineX = Math.abs(enemy.getPosition().x - closestTrampoline.getPosition().x);
         double timeToReachTrampolineX = distanceToTrampolineX / this.movementSpeed;
 
-        // Pathfind to nearest trampoline if neccessarry to survive
+        // Pathfind to nearest trampoline if necessary to survive
         if (timeToReachTrampolineY <= timeToReachTrampolineX+0.3 && enemy.getLinearVelocity().y <= 0) {
             if (enemy.getPosition().x < closestTrampoline.getPosition().x) {
                 enemy.setLinearVelocity(new Vec2(this.movementSpeed, enemy.getLinearVelocity().y));
@@ -74,7 +80,7 @@ public class EnemyController implements StepListener {
                 targetVelocity = -this.movementSpeed;
             }
         }
-
+        // Apply linear interpolation smoothing to make enemy not get stuck on player location
         float smoothedVelocityX = enemy.getLinearVelocity().x + (targetVelocity - enemy.getLinearVelocity().x) * smoothFactor;
         enemy.setLinearVelocity(new Vec2(smoothedVelocityX, enemy.getLinearVelocity().y));
  

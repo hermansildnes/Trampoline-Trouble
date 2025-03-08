@@ -1,0 +1,33 @@
+Other than the built-in autocompletion feature in IntelliJ which is already quite sophisticated and provided me
+with quite a lot of assistance in typing out the code for this project, I occasionally sought help from AI tools.
+Most of the time, this was through Anthropic's Claude Sonnet 3.5 and later 3.7. This was of great help to me, as
+it provided me insight into different approaches to solving the problems I faced.
+Occasionally, I found myself stuck, not knowing how to proceed with the implementation of a feature. In those cases,
+consulting Claude showed me different ways I could approach the problem, and allowed me to combine these different
+approaches into a solution that worked for my specific case.
+
+Claude helped me with the following tasks:
+- Ideas on how to implement animation handling in the game
+- How to use vector maths for ray tracing for the LaserGun
+- How to use linear interpolation for the movement of the enemy
+
+The following is an example of how I prompted Claude to assist me with ideas for animations:
+"I am working on implementing animations for the player character. The jump animation should trigger on collission
+with a Trampoline object. I am loading the sprites on creation of the player object, but I am struggling to come
+up with a way to implement the animation logic. The stepListener interface allows me to call code pre and post
+each step, but on collision with the trampoline, I need to load the start of the animation, then call jump on
+the player object before I load the rest of the animation. How could I do this?"
+
+The following is an example of how I prompted Claude to assist me with ideas for ray tracing:
+"How could I implement a ray tracing like gun that points a vector from the player position to the mouse position,
+and then calculates whether the ray hits an enemy object?"
+
+The following is an example of how I prompted Claude to assist me with enemy movement:
+"The following is my movement pathfinding logic for a enemy character in a game. The Player is controlled
+via keyboard and is not affected by this logic. Currently the movement is very staccato.
+How can I make it more smooth?"
+
+I used the different results Claude provided me with to put together my own implementation inspired by the approaches
+Claude suggested. None of my implementations ended up being exactly the ones suggested, but rather a combination
+of different approaches suggested through multiple prompts, and my own changes and ideas to make it fit the structure
+and style of my codebase.

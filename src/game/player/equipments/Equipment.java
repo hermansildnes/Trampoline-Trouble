@@ -8,7 +8,9 @@ import org.jbox2d.common.Vec2;
 import game.enemy.Enemy;
 import game.player.Player;
 
-
+/*
+ * Abstract class for equipment that the player can use. Specifies helper functions and variables.
+ */
 public abstract class Equipment {
     protected Image icon;
     protected Player player;

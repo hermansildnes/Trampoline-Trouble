@@ -7,7 +7,11 @@ import city.cs.engine.BodyImage;
 import city.cs.engine.Shape;
 import city.cs.engine.Walker;
 import city.cs.engine.World;
-
+/*  
+ * Generic class for animatable characters that allows 
+ * for loading a set of different animationStates and 
+ * triggering of animations based on different events
+*/
 public abstract class Animatable extends Walker{
     
     protected String assetPath;
@@ -16,7 +20,7 @@ public abstract class Animatable extends Walker{
     protected String direction = "right";
 
     private static final int  FRAMES_PER_ANIMATION = 4;
-    
+    // Allowed animationStates
     public enum AnimationState {
       NEUTRAL,
       JUMP,
@@ -25,8 +29,8 @@ public abstract class Animatable extends Walker{
       ATTACK,
       DAMAGE
    }
-   
-   private Map<String, Map<AnimationState, BodyImage[]>> directionAnimations;
+   // Map from direction facing to correspending array of animation sprites
+   private final Map<String, Map<AnimationState, BodyImage[]>> directionAnimations;
    private AnimationState currentState = AnimationState.NEUTRAL;
    private boolean isAnimating = false;
    private int currentFrame = 0;
@@ -44,11 +48,14 @@ public abstract class Animatable extends Walker{
         this.addImage(neutralRight);
     }
 
+    // Allows for custom animations for different entities given name of animation and a frameCount
     protected void addAnimation(AnimationState state, String prefix, int frameCount) {
         directionAnimations.get("right").put(state, loadAnimation("right", prefix, frameCount));
         directionAnimations.get("left").put(state, loadAnimation("left", prefix, frameCount));
     }
 
+   // Helper function to load the files for an animation into an array 
+   // that can be mapped to from the desired animationState
     private BodyImage[] loadAnimation(String direction, String prefix, int frameCount) {
         BodyImage[] frames = new BodyImage[frameCount];
         for (int i = 0; i < frameCount; i++) {
@@ -65,7 +72,9 @@ public abstract class Animatable extends Walker{
         updateAnimation();
      }
 
-     private void updateAnimation() {
+     // Update the entity with the correct sprite depending on the current 
+     // frame of the animation and the direction it should face.
+      private void updateAnimation() {
         this.removeAllImages();
         if (currentState == AnimationState.NEUTRAL || !isAnimating) {
            this.addImage(direction.equals("right") ? neutralRight : neutralLeft);

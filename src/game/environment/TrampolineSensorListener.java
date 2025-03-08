@@ -5,18 +5,19 @@ import city.cs.engine.SensorListener;
 import game.enemy.Enemy;
 import game.player.Player;
 
+/* 
+ * Trigger jump when an entity collides with the sensor right above the trampoline
+ */
 public class TrampolineSensorListener implements SensorListener {
 
     @Override
     public void beginContact(SensorEvent e) {
-        if (e.getContactBody() instanceof Player) {
-            Player player = (Player) e.getContactBody();
+        if (e.getContactBody() instanceof Player player) {
             player.jump(20);
                 
         }
-        if (e.getContactBody() instanceof Enemy) {
-            Enemy enemy = (Enemy) e.getContactBody();
-            enemy.jump(15);   
+        if (e.getContactBody() instanceof Enemy enemy) {
+            enemy.jump(15);
             }
     }
 

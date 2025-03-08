@@ -11,9 +11,12 @@ import game.environment.collectibles.Collectible;
 import game.environment.collectibles.Collectible.CollectibleType;
 import game.player.Player;
 
+
+/* First level specifying where ground, trampolines etc should be placed and 
+ * equips the player with a gun.
+ */
 public class Level1 extends Level {
 
-    private WaveController waveController;
 
     public Level1() {
         super();
@@ -29,7 +32,7 @@ public class Level1 extends Level {
         player.setEquipment(CollectibleType.LASERGUN);
 
         // Initialize and add the wave controller
-        waveController = new WaveController(this);
+        this.waveController = new WaveController(this);
         this.addStepListener(waveController);
 
     }
