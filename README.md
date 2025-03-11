@@ -2,12 +2,12 @@
 
 ## <u>Concept</u>
 
-A 2d platform-like shooter game built with Java using City Engine, a wrapper around JBox2D. The game is inspired by the game [Vikings on Trampolines](https://store.steampowered.com/app/748810/Vikings_On_Trampolines/) by the Norwegian developer D-Pad Studio. The player must survive waves of enemies by jumping between trampolines and using weapons to defeat enemies.
+A 2d platform-like brawler game built with Java using City Engine, a wrapper around JBox2D. The game is inspired by the game [Vikings on Trampolines](https://store.steampowered.com/app/748810/Vikings_On_Trampolines/) by the Norwegian developer D-Pad Studio. The player must survive waves of enemies by jumping between trampolines and using weapons to defeat enemies.
 
 
 ## <u>Gameplay</u>
 
-This platform-like game features a player who must stay above the deadly ground by jumping between trampolines. Waves of enemies spawn, and as they attempt to distract the player from survival, the player collects power-ups in an attempt to defeat them.
+This platform-like brawler game features a player who must stay above the deadly ground by jumping between trampolines. Waves of enemies spawn, and as they attempt to distract the player from survival, the player collects power-ups in an attempt to defeat them.
 
 
 ## <u>How to Play</u>
@@ -47,6 +47,14 @@ java -cp src game.Game
     - `worlds/`: Level design and wave management
     - `environment/`: Environmental elements like trampolines and collectibles
 - `data/assets/`: Game assets (sprites, images)
+
+## <u>Planned features</u>
+- [ ] Level progression - Defeat all waves in the current level to progress to the next
+- [ ] UI - Play/pause, See finished levels, 
+- [ ] Sounds - Bounce, music, damage etc.
+- [ ] Additional Collectibles
+- [ ] Polished animations
+
 
 ## <u>Credits</u>
 - Player sprites: Graphics created by Penzilla Design
