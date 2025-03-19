@@ -13,12 +13,18 @@ public class GameView extends UserView {
     private final Level world;
     private final Image background;
     private final Image[] healthImages;
+    private final Image layer2;
+    private final Image layer3;
 
     public GameView(Level world, int width, int height) {
         super(world, width, height);
         this.world = world;
         // Load necessary files
-        background = new ImageIcon("data/assets/backgrounds/background_glacial_mountains_lightened.png").getImage();
+        //background = new ImageIcon("data/assets/backgrounds/background_glacial_mountains_lightened.png").getImage();
+        //background = new ImageIcon("data/assets/backgrounds/mountains-dusk.png").getImage();
+        background = new ImageIcon("data/assets/backgrounds/level" + world.getLevelNumber() + "/layer1.png").getImage();
+        layer2 = new ImageIcon("data/assets/backgrounds/level" + world.getLevelNumber() + "/layer2.png").getImage();
+        layer3 = new ImageIcon("data/assets/backgrounds/level" + world.getLevelNumber() + "/layer3.png").getImage();
         healthImages = new Image[]{
             new ImageIcon("data/assets/uibars/1hp.png").getImage(),
             new ImageIcon("data/assets/uibars/2hp.png").getImage(),
@@ -34,6 +40,8 @@ public class GameView extends UserView {
         AffineTransform transform = g.getTransform();
         transform.scale((float)getWidth()/background.getWidth(this), (float)getHeight()/background.getHeight(this));
         g.drawImage(background, transform, this);
+        g.drawImage(layer2, transform, this);
+        g.drawImage(layer3, transform, this);
     }
     
     @Override

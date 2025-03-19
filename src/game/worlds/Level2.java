@@ -15,11 +15,11 @@ import game.player.Player;
 /* First level specifying where ground, trampolines etc should be placed and 
  * equips the player with a gun.
  */
-public class Level1 extends Level {
+public class Level2 extends Level {
 
 
-    public Level1() {
-        super(1);
+    public Level2() {
+        super(2);
         Ground ground = new Ground(this, new Vec2(0f, -14f));
         this.trampolines = new ArrayList<Trampoline>();
         trampolines.add(new Trampoline(this, ground));
