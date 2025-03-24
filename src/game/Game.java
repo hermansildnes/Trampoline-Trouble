@@ -7,43 +7,79 @@ import game.worlds.Level1;
 import game.worlds.Level2;
 import game.worlds.Level3;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JFrame;
 
 public class Game {
+    private MenuManager menuManager;
+    private Level world;
+    private GameView view;
+    private KeyHandler keyHandler;
+    private MouseHandler mouseHandler;
+    private PlayerController playerController;
 
-    public Game() {
+    private ArrayList<GameStateListener> gameStateListeners = new ArrayList<>();
 
-        // //Level world = new Level1();
-        // Level world = new Level3();
-        // //Level world = new Level3();
-        // GameView view = new GameView(world, 800, 600);
-
-
-        // KeyHandler keyHandler = new KeyHandler();
-        // MouseHandler mouseHandler = new MouseHandler(view);
-        // PlayerController playerController = new PlayerController(world.getPlayer(), keyHandler, mouseHandler);
-        // world.addStepListener(playerController);
-        // view.addKeyListener(keyHandler);
-        // view.addMouseMotionListener(mouseHandler);
-        // view.addMouseListener(mouseHandler);
-
-        // final JFrame frame = new JFrame("City Game");
-        // MenuManager startMenu = new MenuManager(frame);
-        // frame.add(view);
-        // frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        // frame.setLocationByPlatform(true);
-        // frame.setResizable(false);
-        // frame.pack();
-        // frame.setVisible(true);
-
-        // view.setFocusable(true);
-        // view.requestFocusInWindow();
-
-        // world.start();
-        MenuManager menuManager = new MenuManager();
+    public Game(int levelNumber, MenuManager menuManager) {
+        this.menuManager = menuManager;
+        loadLevel(levelNumber);
     }
+
+    private void loadLevel(int levelNumber) {
+        // Create the appropriate level
+        switch (levelNumber) {
+            case 1:
+                world = new Level1(this);
+                break;
+            case 2:
+                world = new Level2(this);
+                break;
+            case 3:
+                world = new Level3(this);
+                break;
+            default:
+                world = new Level1(this);
+        }
+
+        // Create game view
+        view = new GameView(world, 800, 600);
+        
+        // Set up input handlers
+        keyHandler = new KeyHandler();
+        mouseHandler = new MouseHandler(view);
+        playerController = new PlayerController(world.getPlayer(), keyHandler, mouseHandler);
+        
+        // Add listeners
+        world.addStepListener(playerController);
+        view.addKeyListener(keyHandler);
+        view.addMouseMotionListener(mouseHandler);
+        view.addMouseListener(mouseHandler);
+        
+        // Start the world physics
+        world.start();
+    }
+
+    public GameView getGameView() {
+        return view;
+    }
+
+
+    public void noitfyGameComplete() {
+        exitToMenu();
+    }
+
+    // Method to exit to menu
+    public void exitToMenu() {
+        if (world != null) {
+            world.stop(); // Stop the world's physics engine
+        }
+        menuManager.returnToMenu();
+    }
+
     public static void main(String[] args) {
-
-        new Game();
+        new MenuManager();
     }
+
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.jbox2d.common.Vec2;
 
+import game.Game;
 import game.enemy.Enemy;
 import game.environment.Ground;
 import game.environment.Trampoline;
@@ -18,8 +19,8 @@ import game.player.Player;
 public class Level1 extends Level {
 
 
-    public Level1() {
-        super(1);
+    public Level1(Game game) {
+        super(1, game);
         Ground ground = new Ground(this, new Vec2(0f, -14f));
         this.trampolines = new ArrayList<Trampoline>();
         trampolines.add(new Trampoline(this, ground));

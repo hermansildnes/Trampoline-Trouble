@@ -3,6 +3,7 @@ package game.worlds;
 import java.util.ArrayList;
 
 import city.cs.engine.World;
+import game.Game;
 import game.enemy.Enemy;
 import game.environment.Trampoline;
 import game.environment.collectibles.Collectible;
@@ -16,9 +17,11 @@ public abstract class Level extends World{
     protected ArrayList<Trampoline> trampolines;
     protected ArrayList<Collectible> collectibles = new ArrayList<Collectible>();
     protected WaveController waveController;
+    protected Game game;
     
-    public Level(int levelNumber) {
+    public Level(int levelNumber, Game game) {
         super();
+        this.game = game;
         this.levelNumber = levelNumber;
     }
 
@@ -43,6 +46,10 @@ public abstract class Level extends World{
 
     public int getLevelNumber() {
         return this.levelNumber;
+    }
+
+    public Game getGame() {
+        return game;
     }
 
 }
