@@ -36,7 +36,7 @@ public class WaveController implements StepListener {
     public void preStep(StepEvent e) {
         System.out.println();
         if (getProgress() >= 1 && level.getEnemies().isEmpty()) {
-            level.getGame().noitfyGameComplete();
+            level.getGame().exitToMenu();
         }
 
         

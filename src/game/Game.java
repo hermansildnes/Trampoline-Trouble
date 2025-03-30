@@ -65,11 +65,6 @@ public class Game {
         return view;
     }
 
-
-    public void noitfyGameComplete() {
-        exitToMenu();
-    }
-
     // Method to exit to menu
     public void exitToMenu() {
         if (world != null) {
