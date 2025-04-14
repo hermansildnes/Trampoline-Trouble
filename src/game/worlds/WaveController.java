@@ -2,7 +2,6 @@ package game.worlds;
 
 import city.cs.engine.StepEvent;
 import city.cs.engine.StepListener;
-import game.Game;
 import game.enemy.Enemy;
 import game.enemy.EnemyController;
 import game.environment.collectibles.Collectible;
@@ -34,7 +33,6 @@ public class WaveController implements StepListener {
     
     @Override
     public void preStep(StepEvent e) {
-        System.out.println();
         if (getProgress() >= 1 && level.getEnemies().isEmpty()) {
             level.getGame().exitToMenu();
         }

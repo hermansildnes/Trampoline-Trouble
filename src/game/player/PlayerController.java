@@ -27,13 +27,13 @@ public class PlayerController implements StepListener {
     @Override
     public void preStep(StepEvent e) {
         // Move based on keys pressed
-        if (keyHandler.aPressed) {
+        if (keyHandler.leftPressed) {
             player.setLinearVelocity(new Vec2(-7.5f, player.getLinearVelocity().y));
         }
-        if (keyHandler.dPressed) {
+        if (keyHandler.rightPressed) {
             player.setLinearVelocity(new Vec2(7.5f, player.getLinearVelocity().y));
         }
-        if (keyHandler.sPressed) {
+        if (keyHandler.downPressed) {
             if (player.getLinearVelocity().y > -10f) {
                 player.applyImpulse(new Vec2(0f, -15f));
         }}
