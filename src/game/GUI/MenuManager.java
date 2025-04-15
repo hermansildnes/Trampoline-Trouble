@@ -57,6 +57,7 @@ public class MenuManager {
     // Progress related fields
     private GameProgress gameProgress;
     private JProgressBar[] levelProgressBars;
+    private JProgressBar gameOverProgressBar;
 
     public MenuManager() {
         frame = new JFrame("Trampoline Trouble");
@@ -310,6 +311,15 @@ public class MenuManager {
         progressLabel.setForeground(TEXT_COLOR);
         progressLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
+        JProgressBar progressBar = new JProgressBar(0, 100);
+        progressBar.setStringPainted(true);
+        progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        progressBar.setPreferredSize(new Dimension(300, 20));
+        progressBar.setMaximumSize(new Dimension(300, 20));
+        
+        gameOverProgressBar = progressBar;
+
+
         // Main menu button
         JButton mainMenuButton = createLargeButton("Main Menu");
         mainMenuButton.addActionListener(e -> {
@@ -327,6 +337,7 @@ public class MenuManager {
         // Add components to progress panel
         progressPanel.add(progressLabel);
         progressPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        progressPanel.add(progressBar); // Add it to the panel
         
         // Add all components
         panel.add(Box.createVerticalGlue());
@@ -581,7 +592,13 @@ public class MenuManager {
     public void showGameOverPanel(float progress) {
         if (game != null) {
             gameProgress.updateLevelProgress(game.getCurrentLevel(), progress);
+
+            if (gameOverProgressBar != null) {
+                gameOverProgressBar.setValue((int)(progress * 100));
+                gameOverProgressBar.setString(Math.round(progress * 100) + "% Complete");
+            }
         }
         showPanel("Game Over");
+
     }
 }
