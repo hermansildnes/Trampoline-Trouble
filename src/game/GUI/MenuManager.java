@@ -13,6 +13,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JSlider;
@@ -69,7 +70,6 @@ public class MenuManager {
         loadAudio();
 
         gameProgress = new GameProgress();
-        gameProgress.loadFromFile();
         gameProgress.addListener(new GameProgress.ProgressListener() {
             @Override
             public void onProgressUpdated(int levelNumber, float progress) {
@@ -174,10 +174,20 @@ public class MenuManager {
         // Settings button
         JButton settingsButton = createLargeButton("Settings");
         settingsButton.addActionListener(e -> showPanel("Settings"));
+
+        JButton loadButton = createLargeButton("Load Game");
+        loadButton.addActionListener(e -> {
+            if (gameProgress.loadFromFile()) {
+                JOptionPane.showMessageDialog(frame, "Game loaded successfully!", "Load Complete", JOptionPane.INFORMATION_MESSAGE);
+                }
+            });
         
         // Exit button
-        JButton exitButton = createLargeButton("Exit");
-        exitButton.addActionListener(e -> System.exit(0));
+        JButton exitButton = createLargeButton("Exit & Save");
+        exitButton.addActionListener(e -> {
+            gameProgress.saveToFile();
+            System.exit(0);
+        });
         
         // Add components        
         panel.add(Box.createVerticalGlue());
@@ -186,6 +196,8 @@ public class MenuManager {
         panel.add(playButton);
         panel.add(Box.createRigidArea(new Dimension(0,20)));
         panel.add(settingsButton);
+        panel.add(Box.createRigidArea(new Dimension(0,20)));
+        panel.add(loadButton);
         panel.add(Box.createRigidArea(new Dimension(0, 20)));
         panel.add(exitButton);
         panel.add(Box.createVerticalGlue());
@@ -254,8 +266,11 @@ public class MenuManager {
         settingsButton.addActionListener(e -> showPanel("Settings"));
         
         // Exit button
-        JButton exitButton = createLargeButton("Exit");
-        exitButton.addActionListener(e -> System.exit(0));
+        JButton exitButton = createLargeButton("Exit & Save");
+        exitButton.addActionListener(e -> {
+            gameProgress.saveToFile();
+            System.exit(0);
+    });
         
         // Add components
         panel.add(Box.createVerticalGlue());
@@ -303,8 +318,11 @@ public class MenuManager {
         });
         
         // Exit button
-        JButton exitButton = createLargeButton("Exit");
-        exitButton.addActionListener(e -> System.exit(0));
+        JButton exitButton = createLargeButton("Exit & Save");
+        exitButton.addActionListener(e -> {
+            gameProgress.saveToFile();
+            System.exit(0);
+        });
         
         // Add components to progress panel
         progressPanel.add(progressLabel);
