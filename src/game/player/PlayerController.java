@@ -26,6 +26,16 @@ public class PlayerController implements StepListener {
 
     @Override
     public void preStep(StepEvent e) {
+
+
+        // Update animation
+        if (player.isAnimating()) {
+            player.incrementFrameCounter();
+        }
+        
+        if (player.isDying()) {
+            return;
+        }
         // Move based on keys pressed
         if (keyHandler.leftPressed) {
             player.setLinearVelocity(new Vec2(-7.5f, player.getLinearVelocity().y));
@@ -50,11 +60,6 @@ public class PlayerController implements StepListener {
             player.setFacingLeft(true);
         } else {
             player.setFacingLeft(false);
-        }
-
-        // Update animation
-        if (player.isAnimating()) {
-            player.incrementFrameCounter();
         }
 
         // Target logic calculating with some basic vector maths

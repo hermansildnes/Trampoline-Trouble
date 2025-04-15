@@ -28,20 +28,8 @@ public class PlayerCollisionListener implements CollisionListener {
 
         // Start death animation if collide with ground and destroy player
         if (e.getOtherBody() instanceof Ground) {
-            player.startAnimation(Player.AnimationState.DEATH);
-            player.setLinearVelocity(new Vec2(0f,0f));
-            player.getTarget().destroy();
+            player.die();
 
-            new java.util.Timer().schedule(
-                    new java.util.TimerTask() {
-                        @Override
-                        public void run() {
-                            player.destroy();
-
-                        }
-                    },
-                    4 * 4 * 16  // frames per animation * steps per frame * milliseconds per step
-            );
         }
     }
 }

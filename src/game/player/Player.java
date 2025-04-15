@@ -17,8 +17,9 @@ import game.worlds.Level;
 */
 public class Player extends Animatable {
    private int health = 5;
-    private final StaticBody target;
+   private final StaticBody target;
    private Equipment equipment;
+   private boolean isDying = false;
    
    // Obtained using the polygon editor
    private static final Shape PLAYER_SHAPE = new PolygonShape(
@@ -110,11 +111,44 @@ public class Player extends Animatable {
 
    // Destroy player if health is 0, otherwise decrease health
    public void decreaseHealth(int damage) {
-      if (this.health - damage <= 0) {
-         target.destroy();
-         this.destroy();
-      } else {
+      if (this.health - damage <= 0 && !isDying) {
+         die();
+      } else if (!isDying) {
          this.health -= damage;
       }
+   }
+   
+   public void die() {
+      isDying = true;
+      this.setLinearVelocity(new Vec2(0, 0));
+      this.startAnimation(Player.AnimationState.DEATH);
+      this.target.destroy();
+      Player player = this;
+
+    new java.util.Timer().schedule(
+      new java.util.TimerTask() {
+          @Override
+          public void run() {
+              player.removeAllImages();
+              player.setPosition(new Vec2(-1000, -1000)); // Janky but works :)
+          }
+      },
+      4 * 4 * 16 - 50  // 50ms before the destroy timer fires
+  );
+      new java.util.Timer().schedule(
+              new java.util.TimerTask() {
+                  @Override
+                  public void run() {
+                      player.destroy();
+                      player.getWorld().getGame().gameOver();
+
+                  }
+              },
+              4 * 4 * 16 +256// frames per animation * steps per frame * milliseconds per step
+      );
+   }
+
+   public boolean isDying() {
+      return isDying;
    }
 }

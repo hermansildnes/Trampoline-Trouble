@@ -22,13 +22,14 @@ public class Game implements StepListener{
     private int rightKey = KeyEvent.VK_D;
     private int downKey = KeyEvent.VK_S;
     private boolean isPaused = false;
-
+    private int currentLevel;
 
     public Game(int levelNumber, MenuManager menuManager, int leftKey, int rightKey, int downKey) {
         this.menuManager = menuManager;
         this.leftKey = leftKey;
         this.rightKey = rightKey;
         this.downKey = downKey;
+        this.currentLevel = levelNumber;
         loadLevel(levelNumber);
     }
 
@@ -106,6 +107,10 @@ public class Game implements StepListener{
         }
     }
 
+    public int getCurrentLevel() {
+        return currentLevel;
+    }
+
     public void pauseGame() {
         System.out.println("Game paused");
         if (!isPaused) {
@@ -126,6 +131,16 @@ public class Game implements StepListener{
             }
             view.requestFocus();
         }
+    }
+
+    public void gameOver() {
+        isPaused = true;
+        if (world != null) {
+            world.stop();
+        }
+
+        float progress = world.getWaveController().getProgress();
+        menuManager.showGameOverPanel(progress);
     }
 
 

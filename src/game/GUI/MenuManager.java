@@ -14,10 +14,12 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JSlider;
 
 import game.AudioManager;
 import game.Game;
+import game.GameProgress;
 import game.GameView;
 
 public class MenuManager {
@@ -51,6 +53,10 @@ public class MenuManager {
     private String currentPanel = "Main Menu";
     private String previousPanel = "Main Menu";
 
+    // Progress related fields
+    private GameProgress gameProgress;
+    private JProgressBar[] levelProgressBars;
+
     public MenuManager() {
         frame = new JFrame("Trampoline Trouble");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,6 +68,20 @@ public class MenuManager {
         audioManager = AudioManager.getInstance();
         loadAudio();
 
+        gameProgress = new GameProgress();
+        gameProgress.loadFromFile();
+        gameProgress.addListener(new GameProgress.ProgressListener() {
+            @Override
+            public void onProgressUpdated(int levelNumber, float progress) {
+                JProgressBar bar = levelProgressBars[levelNumber - 1];
+                if (bar != null) {
+                    bar.setValue((int)(progress * 100));
+                    bar.setString(Math.round(progress * 100) + "% Complete");
+                }
+            }        
+        });
+        levelProgressBars = new JProgressBar[gameProgress.getNumberOfLevels()];
+
         cardLayout = new CardLayout();
         cardPanel = new JPanel(cardLayout);
 
@@ -69,6 +89,7 @@ public class MenuManager {
         cardPanel.add(createLevelSelectMenu(), "Select Level");
         cardPanel.add(createSettingsMenu(), "Settings");
         cardPanel.add(createPauseMenu(), "Pause Menu");
+        cardPanel.add(createGameOverMenu(), "Game Over");
 
 
         frame.add(cardPanel);
@@ -107,6 +128,8 @@ public class MenuManager {
                 }
             }
         });
+
+
 
         audioManager.playMusic("mainmenu");
     }
@@ -156,7 +179,8 @@ public class MenuManager {
         JButton exitButton = createLargeButton("Exit");
         exitButton.addActionListener(e -> System.exit(0));
         
-        // Add components        panel.add(Box.createVerticalGlue());
+        // Add components        
+        panel.add(Box.createVerticalGlue());
         panel.add(gameName);
         panel.add(Box.createRigidArea(new Dimension(0, 70)));
         panel.add(playButton);
@@ -180,42 +204,30 @@ public class MenuManager {
         titleLabel.setForeground(TEXT_COLOR);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
-        // Middle Panel
-        JPanel middlePanel = new JPanel();
-        middlePanel.setLayout(new BoxLayout(middlePanel, BoxLayout.X_AXIS));
-        middlePanel.setBackground(COSMIC_LATTE);
-        middlePanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // Panel for level buttons and progress bars
+        JPanel levelsPanel = new JPanel();
+        levelsPanel.setLayout(new BoxLayout(levelsPanel, BoxLayout.Y_AXIS));
+        levelsPanel.setBackground(COSMIC_LATTE);
+        levelsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
-        // Level buttons
-        JButton level1Button = createLargeButton("Level 1");
-        level1Button.addActionListener(e -> startGame(1));
-        
-        JButton level2Button = createLargeButton("Level 2");
-        level2Button.addActionListener(e -> startGame(2));
-        
-        JButton level3Button = createLargeButton("Level 3");
-        level3Button.addActionListener(e -> startGame(3));
+        // Create level panels with buttons and progress bars
+        levelsPanel.add(createLevelPanel(1));
+        levelsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        levelsPanel.add(createLevelPanel(2));
+        levelsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        levelsPanel.add(createLevelPanel(3));
         
         // Back button
         JButton backButton = createLargeButton("Back");
         backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         backButton.addActionListener(e -> showPanel(previousPanel));
         
-        // Add level buttons to middle panel
-        middlePanel.add(Box.createHorizontalGlue());
-        middlePanel.add(level1Button);
-        middlePanel.add(Box.createRigidArea(new Dimension(30, 0)));
-        middlePanel.add(level2Button);
-        middlePanel.add(Box.createRigidArea(new Dimension(30, 0)));
-        middlePanel.add(level3Button);
-        middlePanel.add(Box.createHorizontalGlue());
-        
         // Add all components together
         panel.add(Box.createVerticalGlue());
         panel.add(titleLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 70)));
-        panel.add(middlePanel);
-        panel.add(Box.createRigidArea(new Dimension(0, 80)));
+        panel.add(Box.createRigidArea(new Dimension(0, 50)));
+        panel.add(levelsPanel);
+        panel.add(Box.createRigidArea(new Dimension(0, 60)));
         panel.add(backButton);
         panel.add(Box.createVerticalGlue());
         
@@ -257,6 +269,60 @@ public class MenuManager {
         panel.add(Box.createVerticalGlue());
         
         return panel;
+    }
+
+    private JPanel createGameOverMenu() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(COSMIC_LATTE);
+        
+        // Game Over title
+        JLabel titleLabel = new JLabel("Game Over");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        titleLabel.setForeground(TEXT_COLOR);
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        // Progress display panel
+        JPanel progressPanel = new JPanel();
+        progressPanel.setLayout(new BoxLayout(progressPanel, BoxLayout.Y_AXIS));
+        progressPanel.setBackground(COSMIC_LATTE);
+        progressPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        progressPanel.setMaximumSize(new Dimension(400, 100));
+        
+        // Level completion label
+        JLabel progressLabel = new JLabel("Level Progress");
+        progressLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        progressLabel.setForeground(TEXT_COLOR);
+        progressLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        // Main menu button
+        JButton mainMenuButton = createLargeButton("Main Menu");
+        mainMenuButton.addActionListener(e -> {
+            showPanel("Main Menu");
+            System.out.println("Game Over progress: " + gameProgress.getLevelProgress(game.getCurrentLevel()));
+        });
+        
+        // Exit button
+        JButton exitButton = createLargeButton("Exit");
+        exitButton.addActionListener(e -> System.exit(0));
+        
+        // Add components to progress panel
+        progressPanel.add(progressLabel);
+        progressPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        
+        // Add all components
+        panel.add(Box.createVerticalGlue());
+        panel.add(titleLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 40)));
+        panel.add(progressPanel);
+        panel.add(Box.createRigidArea(new Dimension(0, 60)));
+        panel.add(mainMenuButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(exitButton);
+        panel.add(Box.createVerticalGlue());
+        
+        return panel;
+            
     }
 
     private JPanel createSettingsMenu() {
@@ -345,6 +411,37 @@ public class MenuManager {
         panel.add(Box.createRigidArea(new Dimension(0, 40)));
         panel.add(backButton);
         panel.add(Box.createVerticalGlue());
+        
+        return panel;
+    }
+
+    // Helper method to create a level panel with button and progress bar
+    private JPanel createLevelPanel(int levelNumber) {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(COSMIC_LATTE);
+        panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        panel.setMaximumSize(new Dimension(400, 100));
+        
+        // Level button
+        JButton levelButton = createLargeButton("Level " + levelNumber);
+        levelButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        levelButton.addActionListener(e -> startGame(levelNumber));
+        
+        // Progress bar
+        JProgressBar progressBar = new JProgressBar(0, 100);
+        progressBar.setValue((int)(gameProgress.getLevelProgress(levelNumber) * 100));
+        progressBar.setStringPainted(true);
+        progressBar.setString(Math.round(gameProgress.getLevelProgress(levelNumber) * 100) + "% Complete");
+        progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        progressBar.setPreferredSize(new Dimension(300, 20));
+        progressBar.setMaximumSize(new Dimension(300, 20));
+        levelProgressBars[levelNumber - 1] = progressBar;
+        
+        // Add components
+        panel.add(levelButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 10)));
+        panel.add(progressBar);
         
         return panel;
     }
@@ -459,6 +556,14 @@ public class MenuManager {
     public void showPanel(String panelName) {
         previousPanel = currentPanel;
         currentPanel = panelName;
+        audioManager.playMusic("mainmenu");
         cardLayout.show(cardPanel, panelName);
+    }
+
+    public void showGameOverPanel(float progress) {
+        if (game != null) {
+            gameProgress.updateLevelProgress(game.getCurrentLevel(), progress);
+        }
+        showPanel("Game Over");
     }
 }
