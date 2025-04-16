@@ -54,7 +54,6 @@ public class AudioManager {
         if (music != null) {
             music.loop();
             currentMusic = name;
-            System.out.println("Now playing: " + name);
         }
     }
     
@@ -71,7 +70,6 @@ public class AudioManager {
     
 
     public void setMasterVolume(float volume) {
-        System.out.println("Setting master volume to: " + volume);
         if (volume < 0.0f) volume = 0.0f;
         if (volume > 1.0f) volume = 1.0f;
         

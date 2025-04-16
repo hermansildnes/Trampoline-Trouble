@@ -143,5 +143,12 @@ public class Game implements StepListener{
         menuManager.showGameOverPanel(progress);
     }
 
+    public void victory() {
+        isPaused = true;
+        if (world != null) {
+            world.stop();
+        }
+        menuManager.showVictoryPanel();
+    }
 
 }

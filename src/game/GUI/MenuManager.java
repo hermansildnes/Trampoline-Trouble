@@ -58,6 +58,7 @@ public class MenuManager {
     private GameProgress gameProgress;
     private JProgressBar[] levelProgressBars;
     private JProgressBar gameOverProgressBar;
+    private JProgressBar victoryProgressBar;
 
     public MenuManager() {
         frame = new JFrame("Trampoline Trouble");
@@ -91,6 +92,7 @@ public class MenuManager {
         cardPanel.add(createSettingsMenu(), "Settings");
         cardPanel.add(createPauseMenu(), "Pause Menu");
         cardPanel.add(createGameOverMenu(), "Game Over");
+        cardPanel.add(createVictoryMenu(), "Victory");
 
 
         frame.add(cardPanel);
@@ -354,6 +356,80 @@ public class MenuManager {
             
     }
 
+    private JPanel createVictoryMenu() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+        panel.setBackground(COSMIC_LATTE);
+        
+        // Victory title
+        JLabel titleLabel = new JLabel("Level Complete!");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        titleLabel.setForeground(new Color(0, 128, 0)); // Green color for victory
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        // Progress display panel (similar to Game Over)
+        JPanel progressPanel = new JPanel();
+        progressPanel.setLayout(new BoxLayout(progressPanel, BoxLayout.Y_AXIS));
+        progressPanel.setBackground(COSMIC_LATTE);
+        progressPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        progressPanel.setMaximumSize(new Dimension(400, 100));
+        
+        // Level completion label
+        JLabel progressLabel = new JLabel("Level Progress");
+        progressLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        progressLabel.setForeground(TEXT_COLOR);
+        progressLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        
+        // Progress bar
+        JProgressBar progressBar = new JProgressBar(0, 100);
+        progressBar.setStringPainted(true);
+        progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        progressBar.setPreferredSize(new Dimension(300, 20));
+        progressBar.setMaximumSize(new Dimension(300, 20));
+        progressBar.setValue(100);
+
+        victoryProgressBar = progressBar;
+        
+        // Next Level button
+        JButton nextLevelButton = createLargeButton("Next Level");
+        nextLevelButton.addActionListener(e -> {
+            if (game != null) {
+                if (game.getCurrentLevel() + 1  <= gameProgress.getNumberOfLevels()) {
+                    startGame(game.getCurrentLevel() + 1);
+                } else {
+                    // If this was the final level
+                    JOptionPane.showMessageDialog(frame, 
+                        "Congratulations! You've completed all levels!", 
+                        "Game Complete", 
+                        JOptionPane.INFORMATION_MESSAGE);
+                    showPanel("Main Menu");
+                }
+            }
+        });
+        
+        // Main Menu button
+        JButton mainMenuButton = createLargeButton("Main Menu");
+        mainMenuButton.addActionListener(e -> showPanel("Main Menu"));
+        
+        // Add components to progress panel
+        progressPanel.add(progressLabel);
+        progressPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        progressPanel.add(progressBar);
+        
+        // Add all components
+        panel.add(Box.createVerticalGlue());
+        panel.add(titleLabel);
+        panel.add(Box.createRigidArea(new Dimension(0, 40)));
+        panel.add(progressPanel);
+        panel.add(Box.createRigidArea(new Dimension(0, 60)));
+        panel.add(nextLevelButton);
+        panel.add(Box.createRigidArea(new Dimension(0, 20)));
+        panel.add(mainMenuButton);
+        panel.add(Box.createVerticalGlue());
+        
+        return panel;
+    }
+
     private JPanel createSettingsMenu() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -600,5 +676,17 @@ public class MenuManager {
         }
         showPanel("Game Over");
 
+    }
+
+    public void showVictoryPanel() {
+        if (game != null) {
+            gameProgress.updateLevelProgress(game.getCurrentLevel(), 1.0f);
+
+            if (victoryProgressBar != null) {
+                victoryProgressBar.setValue(100);
+                victoryProgressBar.setString("100% Complete");
+            }
+        }
+        showPanel("Victory");
     }
 }

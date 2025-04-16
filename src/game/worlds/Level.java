@@ -33,6 +33,12 @@ public abstract class Level extends World{
         return this.enemies;
     }
 
+    public void removeEnemy(Enemy enemy) {
+        if (enemies.contains(enemy)) {
+            enemies.remove(enemy);
+        }
+    }
+
     public ArrayList<Trampoline> getTrampolines() {
         return this.trampolines;
     }
