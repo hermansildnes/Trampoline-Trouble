@@ -4,7 +4,6 @@ import org.jbox2d.common.Vec2;
 
 import city.cs.engine.*;
 import game.Animatable;
-import game.player.Player;
 import game.worlds.Level;
 /*
  * Generic Enemy class that specifies an enemy with health, and that can pathfind to the player

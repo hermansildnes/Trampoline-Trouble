@@ -1,7 +1,5 @@
 package game.player;
 
-import org.jbox2d.common.Vec2;
-
 import city.cs.engine.CollisionEvent;
 import city.cs.engine.CollisionListener;
 import game.enemy.Enemy;
