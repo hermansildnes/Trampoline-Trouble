@@ -33,6 +33,12 @@ public class EnemyController implements StepListener {
 
     @Override
     public void preStep(StepEvent e) {
+        if (enemy.isDying) {
+            return;
+        }
+
+        enemy.update(e);
+
         // Sets the position of the healthbar right above the enemy
         enemy.getHealthbar().setPosition(enemy.getPosition().add(new Vec2(0, 2f)));
         

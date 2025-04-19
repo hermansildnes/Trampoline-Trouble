@@ -8,10 +8,13 @@ import game.worlds.Level;
 /*
  * Generic Enemy class that specifies an enemy with health, and that can pathfind to the player
  */
-public class Enemy extends Animatable {
-    private int health = 5;
-    private boolean isDying = false;
-
+public abstract class Enemy extends Animatable {
+    protected int health;
+    protected boolean isDying = false;
+    protected boolean pathFinding = true;
+    protected StaticBody healthbar;
+    protected String spritePath;
+    
     private static final BodyImage[] healthImages = {
         new BodyImage("data/assets/uibars/1hp.png", 2f),
         new BodyImage("data/assets/uibars/2hp.png", 2f),
@@ -19,24 +22,19 @@ public class Enemy extends Animatable {
         new BodyImage("data/assets/uibars/4hp.png", 2f),
         new BodyImage("data/assets/uibars/5hp.png", 2f),
     };
-    private boolean pathFinding = true;
-    private final StaticBody healthbar;
 
-    public Enemy(Level world, Vec2 position) {
-        super(world, new CircleShape(1f), "data/assets/enemy/");
+    public Enemy(Level world, Vec2 position, String spritePath) {
+        super(world, new CircleShape(1f), spritePath);
 
-       //super(world, new CircleShape(1.0f));
-        // Remove this later to create more enemy types that extends this class
         this.addCollisionListener(new EnemyCollisionListener(this));
         this.setPosition(position);
-        addAnimation(AnimationState.JUMP, "jump", 4);
-        addAnimation(AnimationState.DEATH, "death", 10);
-        addAnimation(AnimationState.DAMAGE, "damage", 4);
 
-        this.healthbar = new StaticBody(world);
-        healthbar.addImage(healthImages[health - 1]);
-        
+        loadAnimations();
+
+        this.healthbar = new StaticBody(world);        
     }
+
+    protected abstract void loadAnimations();
 
     // Overriding the walker implementation of jump to make it more suitable for the trampolines
     @Override
@@ -50,6 +48,7 @@ public class Enemy extends Animatable {
     public Level getWorld() {
        return (Level) super.getWorld();
     }
+
     public void decreaseHealth(int damage) {
         // Destroy the enemy if health is 0, but only after death animation has finished
         if (this.health - damage <= 0) {
@@ -77,7 +76,7 @@ public class Enemy extends Animatable {
                 enemy.setPosition(new Vec2(-1000, -1000)); // Janky but works :)
             }
         },
-        4 * 4 * 16 - 50  // 50ms before the destroy timer fires
+        getDeathAnimationDuration() - 50  // 50ms before the destroy timer fires
         );
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
@@ -88,9 +87,12 @@ public class Enemy extends Animatable {
 
                     }
                 },
-                4 * 4 * 16 +256// frames per animation * steps per frame * milliseconds per step
+                
+                getDeathAnimationDuration() + 256// frames per animation * steps per frame * milliseconds per step
         );
     }
+
+    protected abstract int getDeathAnimationDuration();
 
     public boolean isDying() {
         return isDying;
@@ -98,6 +100,10 @@ public class Enemy extends Animatable {
 
     public void setHealth(int health) {
         this.health = health;
+        if (healthbar != null) {
+            healthbar.removeAllImages();
+            healthbar.addImage(healthImages[health - 1]);
+        }
     }
 
     public int getHealth() {
@@ -115,4 +121,6 @@ public class Enemy extends Animatable {
     public boolean getPathFinding() {
         return pathFinding;
     }
+
+    public void update(StepEvent e) {}
 }
