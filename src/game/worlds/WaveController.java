@@ -1,87 +1,118 @@
 package game.worlds;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Random;
+
+import org.jbox2d.common.Vec2;
+
 import city.cs.engine.StepEvent;
 import city.cs.engine.StepListener;
 import game.enemy.Enemy;
 import game.enemy.EnemyController;
-import game.environment.collectibles.Collectible;
-import game.environment.collectibles.Collectible.CollectibleType;
+import game.enemy.EnemyType;
 
-import org.jbox2d.common.Vec2;
+public abstract class WaveController implements StepListener {
+    protected final Level level;
+    protected ArrayList<Enemy> enemies = new ArrayList<>();;
+    protected final Random random = new Random();
 
-import java.util.ArrayList;
-import java.util.Random;
+    // Wave configuration
+    protected final int waveCount;
+    protected final float waveInterval;
+    protected final float collectibleInterval;
 
-/* Controls the timing of when to spawn enemies and collectibles */
-public class WaveController implements StepListener {
-    private final Level level;
-    private ArrayList<Enemy> enemies;
-    private final ArrayList<Collectible> collectibles;
-    private int currentWave = 1;
-    private float timer = 10f;
-    private static final float WAVE_INTERVAL = 15f;
-    private final Random random = new Random();
-    private static final float COLLECTIBLE_INTERVAL = 5f;
-    private float lastCollectibleSpawnTime = 0f;
-    private final int numberOfWaves = 4;
-    
-    public WaveController(Level level) {
+    // Wave tracking
+    protected int currentWave = 0;
+    protected float timer = 0;
+    protected float lastCollectibleSpawnTime = 0;
+
+    protected Queue<EnemyType> enemyQueue = new LinkedList<>();
+    protected float nextSpawnTime = 0;
+    protected float spawnInterval = 1.0f;
+
+    public WaveController (Level level, int waveCount, float waveInterval, float collectibleInterval) {
         this.level = level;
-        this.enemies = level.getEnemies();
-        this.collectibles = level.getCollectibles();
+
+        this.waveCount = waveCount;
+        this.waveInterval = waveInterval;
+        this.collectibleInterval = collectibleInterval;
     }
-    
+
     @Override
     public void preStep(StepEvent e) {
-        if (getProgress() >= 1.0f && enemies.isEmpty()) {
-            level.getGame().victory();
+        timer += e.getStep();
+
+        if (!enemyQueue.isEmpty() && timer >= nextSpawnTime) {
+            spawnNextEnemy();
         }
 
-        
-        timer += e.getStep();
-        enemies = level.getEnemies();
+        if (getProgress() >= 1.0f && enemies.isEmpty() && enemyQueue.isEmpty()) {
+            level.getGame().victory();   
+        }
 
-        if (currentWave <= numberOfWaves) {
-            // Spawn a new collectible
-            if (timer - lastCollectibleSpawnTime >= COLLECTIBLE_INTERVAL) {
-                spawnCollectibles();
-                lastCollectibleSpawnTime = timer;
-            }
-            // Spawn a new wave of enemies
-            if (timer >= WAVE_INTERVAL) {
-                System.out.println("Wave " + currentWave + " has started!");
-                currentWave++;
-                spawnEnemies(1);
-                lastCollectibleSpawnTime -= timer;
-                timer = 0;
-            } 
+        if (timer-lastCollectibleSpawnTime >= collectibleInterval) {
+            spawnCollectible();
+            lastCollectibleSpawnTime = timer;
+        }
+
+        if (currentWave < waveCount && enemyQueue.isEmpty() && timer >= waveInterval) {
+            startNextWave();
         }
     }
-    
+
+    private void startNextWave() {
+        currentWave++;
+        WaveConfig config = getWaveConfig(currentWave);    
+        queueEnemies(config);
+
+        nextSpawnTime = timer;
+        if (currentWave < waveCount) {
+            timer = 0;
+        }
+    }
+
+    private void queueEnemies(WaveConfig config) {
+        for (EnemyType type : config .getEnemyCounts().keySet()) {
+            int count = config.getEnemyCounts().get(type);
+            for (int i = 0; i < count; i++) {
+                enemyQueue.add(type);
+            }
+        }
+    }
+
+    private void spawnNextEnemy() {
+
+        EnemyType type = enemyQueue.poll();
+        Vec2 position = new Vec2(random.nextInt(20)-10, random.nextInt(10)-5);
+        Enemy enemy = type.create(level, position);
+        level.addStepListener(new EnemyController(enemy));
+        enemies.add(enemy);
+        nextSpawnTime += spawnInterval;
+    }
+
+    public void removeEnemy(Enemy enemy) {
+        if (enemies.contains(enemy)) {
+            enemies.remove(enemy);
+        }
+    }
+
+    public ArrayList<Enemy> getEnemies() {
+        return enemies;
+    }
+
     @Override
     public void postStep(StepEvent e) {
     }
 
-    private void spawnEnemies(int enemiesToSpawn) {
-        for (int i = 0; i < enemiesToSpawn; i++) {
-            Enemy enemy = new Enemy(level, new Vec2(random.nextInt(20) - 10, 10));
-            level.addStepListener(new EnemyController(enemy));
-            enemies.add(enemy);
-        }
-    }
+    protected abstract WaveConfig getWaveConfig(int waveNumber);
 
-    private void spawnCollectibles() {
-        // 75% Chance spawned collectible is a healthpack, 25% it is a gun/ammo
-        if (random.nextFloat() < 0.75f) {
-            collectibles.add(new Collectible(level, new Vec2(random.nextInt(20) - 10, random.nextInt(10)-5), CollectibleType.HEALTHPACK));
-        } else {
-            collectibles.add(new Collectible(level, new Vec2(random.nextInt(20) - 10, random.nextInt(10)-5), CollectibleType.LASERGUN));
-        }
-    }
+    protected abstract void spawnCollectible();
 
-    // Calculate the progress from 0-1 of the current level, 
-    // based on number of waves and progress through the wave.
+
+
     public float getProgress() {
-        return Math.max(0, Math.min(1, (currentWave-1 + (timer/WAVE_INTERVAL)) / (float)numberOfWaves)); 
+        return Math.max(0, Math.min(1, (currentWave-1 + (timer/waveInterval)) / (float)waveCount)); 
     }
 }

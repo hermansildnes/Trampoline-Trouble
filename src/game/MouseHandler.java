@@ -22,6 +22,12 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
         mouseClicked = true;
     }
 
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        mousePosition = view.viewToWorld(e.getPoint());
+    }
+
     @Override
     public void mouseReleased(MouseEvent e) {
     }
@@ -42,12 +48,6 @@ public class MouseHandler implements MouseListener, MouseMotionListener {
     public void mouseDragged(MouseEvent e) {
     }
 
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        
-        mousePosition = view.viewToWorld(e.getPoint());
-        
-    }
 
 
 

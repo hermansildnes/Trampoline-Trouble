@@ -83,7 +83,7 @@ public abstract class Enemy extends Animatable {
                     @Override
                     public void run() {
                         enemy.destroy();
-                        enemy.getWorld().removeEnemy(enemy);
+                        enemy.getWorld().getWaveController().removeEnemy(enemy);
 
                     }
                 },

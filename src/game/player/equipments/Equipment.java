@@ -14,12 +14,13 @@ import game.player.Player;
 public abstract class Equipment {
     protected Image icon;
     protected Player player;
-    protected ArrayList<Enemy> enemies;
     protected int ammunition;
+    protected ArrayList<Enemy> enemies;
 
     public Equipment(Player player) {
         this.player = player;
-        this.enemies = player.getWorld().getEnemies();
+        this.enemies = new ArrayList<Enemy>();
+        updateEnemies();
     }
 
     public Image getIcon() {
@@ -29,8 +30,15 @@ public abstract class Equipment {
     public int getAmmunition() {
         return ammunition;
     }
+
+    protected void updateEnemies() {
+        if (player.getWorld().getWaveController() != null) {
+            enemies = player.getWorld().getWaveController().getEnemies();
+        }
+    }
     
     public void use(Vec2 mousePosition) {
+        updateEnemies();
     }
 
 

@@ -23,6 +23,7 @@ public class GameProgress implements Serializable{
     public interface ProgressListener {
         void onProgressUpdated(int levelNumber, float progress);
     }
+    
     public GameProgress() {
         levelProgress = new float[NUM_LEVELS];
         for (int i = 0; i < NUM_LEVELS; i++) {
