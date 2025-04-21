@@ -8,7 +8,7 @@ public class ShootingEnemy extends Enemy {
     private static final int health = 2;
 
     public ShootingEnemy(Level world, Vec2 position) {
-        super(world, position, "data/assets/enemy/fastenemy/");
+        super(world, position, "data/assets/enemy/baseenemy/");
         this.setHealth(health);    }
 
     @Override

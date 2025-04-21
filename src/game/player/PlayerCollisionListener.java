@@ -10,6 +10,7 @@ import game.environment.Ground;
  */
 public class PlayerCollisionListener implements CollisionListener {
     private final Player player;
+    private long lastDamageTime = 0;
 
     public PlayerCollisionListener(Player player) {
         this.player = player;
@@ -20,8 +21,12 @@ public class PlayerCollisionListener implements CollisionListener {
     public void collide(CollisionEvent e) {
 
         // Take damage if collide with enemy
-        if (e.getOtherBody() instanceof Enemy) {            
-            player.decreaseHealth(1);
+        if (e.getOtherBody() instanceof Enemy) {        
+            if (System.currentTimeMillis() - lastDamageTime > 1000) {
+                player.decreaseHealth(1);
+                lastDamageTime = System.currentTimeMillis();
+
+            }    
         }
 
         // Start death animation if collide with ground and destroy player

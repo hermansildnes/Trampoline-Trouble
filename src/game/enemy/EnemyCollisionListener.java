@@ -29,13 +29,12 @@ public class EnemyCollisionListener implements CollisionListener {
                             enemy.setPathFinding(true);
                         }
                     },
-                    1000
+                    1500
             );
         }
 
         if (e.getOtherBody() instanceof Ground) {
-            enemy.getHealthbar().destroy();
-            enemy.destroy();
+            enemy.die();
         }
     }
 }

@@ -7,11 +7,10 @@ import game.environment.collectibles.Collectible;
 
 public class Level3Controller extends WaveController {
     private static final int WAVE_COUNT = 4;
-    private static final float WAVE_INTERVAL = 15f;
     private static final float COLLECTIBLE_INTERVAL = 5f;
 
     public Level3Controller(Level level) {
-        super(level, WAVE_COUNT, WAVE_INTERVAL, COLLECTIBLE_INTERVAL);
+        super(level, WAVE_COUNT, COLLECTIBLE_INTERVAL);
     }
 
     @Override
@@ -19,17 +18,13 @@ public class Level3Controller extends WaveController {
         WaveConfig config = new WaveConfig();
         switch (waveNumber) {
             case 1:
-                return config.add(EnemyType.BASE, 2);
+                return config.add(EnemyType.FAST, 2);
             case 2:
-                return config.add(EnemyType.FAST, 2)
-                        .add(EnemyType.BASE, 1);
+                return config.add(EnemyType.BASE, 1)
+                        .add(EnemyType.SHOOTING, 1);
             case 3:
                 return config.add(EnemyType.SHOOTING, 2)
                         .add(EnemyType.FAST, 1);
-            case 4:
-                return config.add(EnemyType.SHOOTING, 2)
-                        .add(EnemyType.FAST, 2)
-                        .add(EnemyType.BASE, 1);
             default:
                 return config.add(EnemyType.BASE, 1);
         }

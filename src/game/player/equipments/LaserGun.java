@@ -21,6 +21,7 @@ public class LaserGun extends Equipment {
 
     @Override
     public void use(Vec2 mousePosition) {
+        updateEnemies();
         ammunition--;
         float enemyRadius = 1.0f;
         // Calculate vector from player to mouse and normalize it

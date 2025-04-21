@@ -8,12 +8,12 @@ public class FastEnemy extends Enemy {
     private static final int health = 3;
 
     public FastEnemy(Level world, Vec2 position) {
-        super(world, position, "data/assets/enemy/fastenemy/");
+        super(world, position, "data/assets/enemy/baseenemy/");
         this.setHealth(health);    }
 
     @Override
     public void setLinearVelocity(Vec2 velocity) {
-        super.setLinearVelocity(new Vec2(velocity.x * 1.5f, velocity.y));
+        super.setLinearVelocity(new Vec2(velocity.x * 1.2f, velocity.y));
     }
 
     @Override

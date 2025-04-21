@@ -20,23 +20,25 @@ public abstract class WaveController implements StepListener {
 
     // Wave configuration
     protected final int waveCount;
-    protected final float waveInterval;
     protected final float collectibleInterval;
+    protected final float waveCooldown = 2.0f;
 
     // Wave tracking
     protected int currentWave = 0;
     protected float timer = 0;
     protected float lastCollectibleSpawnTime = 0;
+    protected boolean firstWaveStarted = false;
+    protected float lastWaveTime = 0;
+
+    protected WaveConfig currentWaveConfig;
 
     protected Queue<EnemyType> enemyQueue = new LinkedList<>();
     protected float nextSpawnTime = 0;
     protected float spawnInterval = 1.0f;
 
-    public WaveController (Level level, int waveCount, float waveInterval, float collectibleInterval) {
+    public WaveController (Level level, int waveCount, float collectibleInterval) {
         this.level = level;
-
         this.waveCount = waveCount;
-        this.waveInterval = waveInterval;
         this.collectibleInterval = collectibleInterval;
     }
 
@@ -44,12 +46,23 @@ public abstract class WaveController implements StepListener {
     public void preStep(StepEvent e) {
         timer += e.getStep();
 
+        if (currentWave == 0 && !firstWaveStarted && timer > 2.0f) {
+            startNextWave();
+            firstWaveStarted = true;
+        }
+
+        if (currentWave > 0 && currentWave < waveCount && enemyQueue.isEmpty() && enemies.isEmpty() && timer - lastWaveTime >= waveCooldown) {
+            startNextWave();
+        }
+
         if (!enemyQueue.isEmpty() && timer >= nextSpawnTime) {
             spawnNextEnemy();
         }
 
-        if (getProgress() >= 1.0f && enemies.isEmpty() && enemyQueue.isEmpty()) {
-            level.getGame().victory();   
+        if (currentWave >= waveCount && enemies.isEmpty() && enemyQueue.isEmpty()) {
+            if (level.getPlayer() != null && !level.getPlayer().isDying()) {
+                level.getGame().victory();   
+            }
         }
 
         if (timer-lastCollectibleSpawnTime >= collectibleInterval) {
@@ -57,38 +70,41 @@ public abstract class WaveController implements StepListener {
             lastCollectibleSpawnTime = timer;
         }
 
-        if (currentWave < waveCount && enemyQueue.isEmpty() && timer >= waveInterval) {
-            startNextWave();
-        }
+
     }
 
     private void startNextWave() {
         currentWave++;
-        WaveConfig config = getWaveConfig(currentWave);    
-        queueEnemies(config);
+        currentWaveConfig = getWaveConfig(currentWave);    
+        queueEnemies(currentWaveConfig);
 
-        nextSpawnTime = timer;
-        if (currentWave < waveCount) {
-            timer = 0;
-        }
+        nextSpawnTime  = timer + 1.0f;
+        lastWaveTime = timer;
+
+
     }
 
     private void queueEnemies(WaveConfig config) {
+        enemyQueue.clear();
+
         for (EnemyType type : config .getEnemyCounts().keySet()) {
             int count = config.getEnemyCounts().get(type);
             for (int i = 0; i < count; i++) {
                 enemyQueue.add(type);
             }
+
         }
     }
 
     private void spawnNextEnemy() {
 
         EnemyType type = enemyQueue.poll();
-        Vec2 position = new Vec2(random.nextInt(20)-10, random.nextInt(10)-5);
+        Vec2 position = new Vec2(random.nextInt(20)-10, 10);
+        
         Enemy enemy = type.create(level, position);
         level.addStepListener(new EnemyController(enemy));
         enemies.add(enemy);
+        
         nextSpawnTime += spawnInterval;
     }
 
@@ -111,8 +127,30 @@ public abstract class WaveController implements StepListener {
     protected abstract void spawnCollectible();
 
 
-
     public float getProgress() {
-        return Math.max(0, Math.min(1, (currentWave-1 + (timer/waveInterval)) / (float)waveCount)); 
+        // No progress if no waves
+        if (waveCount <= 0) return 0;
+        
+        // Calculate completed waves progress
+        float completedWavesProgress = (float)(currentWave - 1) / waveCount;
+        
+        // Calculate progress through current wave
+        float currentWaveProgress = 0;
+        if (currentWave > 0 && currentWave <= waveCount) {
+            // Calculate fraction of enemies defeated in current wave
+            int totalEnemies = 0;
+            if (currentWaveConfig != null) {
+                totalEnemies = currentWaveConfig.getTotalCount();
+            }
+            
+            if (totalEnemies > 0) {
+                int enemiesDefeated = totalEnemies - enemies.size() - enemyQueue.size();
+                currentWaveProgress = (float)enemiesDefeated / totalEnemies / waveCount;
+            }
+        }
+        
+        // Combine and limit to range [0,1]
+        float totalProgress = completedWavesProgress + currentWaveProgress;
+        return Math.max(0, Math.min(1, totalProgress));
     }
 }
