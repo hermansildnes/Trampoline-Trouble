@@ -16,6 +16,8 @@ public enum EnemyType {
             case FAST:
                 return new FastEnemy(level, position);
             case SHOOTING:
+                System.out.println("Creating Shooting Enemy");
+
                 return new ShootingEnemy(level, position);
             default:
                 return new BaseEnemy(level, position);

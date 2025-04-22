@@ -72,16 +72,7 @@ public class MenuManager {
         loadAudio();
 
         gameProgress = new GameProgress();
-        gameProgress.addListener(new GameProgress.ProgressListener() {
-            @Override
-            public void onProgressUpdated(int levelNumber, float progress) {
-                JProgressBar bar = levelProgressBars[levelNumber - 1];
-                if (bar != null) {
-                    bar.setValue((int)(progress * 100));
-                    bar.setString(Math.round(progress * 100) + "% Complete");
-                }
-            }        
-        });
+
         levelProgressBars = new JProgressBar[gameProgress.getNumberOfLevels()];
 
         cardLayout = new CardLayout();
@@ -527,20 +518,38 @@ public class MenuManager {
         panel.setBackground(COSMIC_LATTE);
         panel.setAlignmentX(Component.CENTER_ALIGNMENT);
         panel.setMaximumSize(new Dimension(400, 100));
-        
+
+        boolean isUnlocked = gameProgress.isLevelUnlocked(levelNumber);
+        float progress = gameProgress.getLevelProgress(levelNumber);
+
+
         // Level button
         JButton levelButton = createLargeButton("Level " + levelNumber);
         levelButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        levelButton.addActionListener(e -> startGame(levelNumber));
         
+        if (isUnlocked) {
+            levelButton.addActionListener(e -> startGame(levelNumber));
+            levelButton.setEnabled(true);
+        } else {
+            levelButton.setEnabled(false);
+            levelButton.setForeground(Color.GRAY);
+            levelButton.addActionListener(e ->
+                JOptionPane.showMessageDialog(frame, 
+                "Complete the previous level to unlock this one!", 
+                "Level Locked", 
+                JOptionPane.INFORMATION_MESSAGE)
+            );
+        }
+                
         // Progress bar
         JProgressBar progressBar = new JProgressBar(0, 100);
-        progressBar.setValue((int)(gameProgress.getLevelProgress(levelNumber) * 100));
+        progressBar.setValue((int)(progress * 100));
         progressBar.setStringPainted(true);
-        progressBar.setString(Math.round(gameProgress.getLevelProgress(levelNumber) * 100) + "% Complete");
+        progressBar.setString(Math.round(progress * 100) + "% Complete");
         progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
         progressBar.setPreferredSize(new Dimension(300, 20));
         progressBar.setMaximumSize(new Dimension(300, 20));
+
         levelProgressBars[levelNumber - 1] = progressBar;
         
         // Add components
@@ -662,6 +671,13 @@ public class MenuManager {
         previousPanel = currentPanel;
         currentPanel = panelName;
         audioManager.playMusic("mainmenu");
+
+        if (panelName.equals("Select Level")) {
+            cardPanel.remove(cardPanel.getComponent(1));
+            cardPanel.add(createLevelSelectMenu(), "Select Level", 1);
+            cardPanel.revalidate();
+        }
+
         cardLayout.show(cardPanel, panelName);
     }
 

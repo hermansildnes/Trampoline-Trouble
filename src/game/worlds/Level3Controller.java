@@ -6,7 +6,7 @@ import game.enemy.EnemyType;
 import game.environment.collectibles.Collectible;
 
 public class Level3Controller extends WaveController {
-    private static final int WAVE_COUNT = 4;
+    private static final int WAVE_COUNT = 3;
     private static final float COLLECTIBLE_INTERVAL = 5f;
 
     public Level3Controller(Level level) {

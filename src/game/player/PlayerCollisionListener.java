@@ -3,6 +3,7 @@ package game.player;
 import city.cs.engine.CollisionEvent;
 import city.cs.engine.CollisionListener;
 import game.enemy.Enemy;
+import game.enemy.EnemyBullet;
 import game.environment.Ground;
 
 /* Deals with some of the collision logic for the player, although some is handled
@@ -27,6 +28,14 @@ public class PlayerCollisionListener implements CollisionListener {
                 lastDamageTime = System.currentTimeMillis();
 
             }    
+        }
+
+        if (e.getOtherBody() instanceof EnemyBullet) {
+            EnemyBullet bullet = (EnemyBullet) e.getOtherBody();
+            player.getWorld().getWaveController().removeBullet(bullet);
+            bullet.destroy();
+            player.decreaseHealth(1);
+            lastDamageTime = System.currentTimeMillis();
         }
 
         // Start death animation if collide with ground and destroy player

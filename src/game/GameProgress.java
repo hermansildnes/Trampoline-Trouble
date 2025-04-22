@@ -8,17 +8,16 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class GameProgress implements Serializable{
+public class GameProgress implements Serializable {
     private static final int NUM_LEVELS = 3;
+    
     private float[] levelProgress;
-    private List<ProgressListener> listeners = new ArrayList<>();
+    private boolean[] levelUnlocked;
 
     public interface ProgressListener {
         void onProgressUpdated(int levelNumber, float progress);
@@ -26,17 +25,22 @@ public class GameProgress implements Serializable{
     
     public GameProgress() {
         levelProgress = new float[NUM_LEVELS];
-        for (int i = 0; i < NUM_LEVELS; i++) {
-            levelProgress[i] = 0.0f;
-        }
+        levelUnlocked = new boolean[NUM_LEVELS];
+
+        levelUnlocked[0] = true;
+        levelUnlocked[2] = true;
     }
 
     public boolean updateLevelProgress(int levelNumber, float progress) {
+        if (levelNumber < 1 || levelNumber > NUM_LEVELS) {
+            return false;
+        }
+
         if (progress > levelProgress[levelNumber - 1]) {
             levelProgress[levelNumber - 1] = progress;
             
-            for (ProgressListener listener : listeners) {
-                listener.onProgressUpdated(levelNumber, progress);
+            if (progress >= 0.999f && levelNumber < NUM_LEVELS) {
+                levelUnlocked[levelNumber] = true;
             
             }
             return true;    
@@ -45,17 +49,21 @@ public class GameProgress implements Serializable{
     }
 
     public float getLevelProgress(int levelNumber) {
+        if (levelNumber < 1 || levelNumber > NUM_LEVELS) {
+            return 0;
+        }
         return levelProgress[levelNumber - 1];
     }
 
-    public void addListener(ProgressListener listener) {
-        if (!listeners.contains(listener)) {
-            listeners.add(listener);
+    public boolean isLevelUnlocked(int levelNumber) {
+        if (levelNumber < 1 || levelNumber > NUM_LEVELS) {
+            return false;
         }
+        return levelUnlocked[levelNumber - 1];
     }
 
-    public void removeListener(ProgressListener listener) {
-        listeners.remove(listener);
+    public int getNumberOfLevels() {
+        return NUM_LEVELS;
     }
 
     public void saveToFile() {
@@ -69,6 +77,7 @@ public class GameProgress implements Serializable{
             
             try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filename))) {
                 out.writeObject(levelProgress);
+                out.writeObject(levelUnlocked);
             }
         } catch (IOException e) {
             System.err.println("Error saving to file: " + e.getMessage());
@@ -93,25 +102,16 @@ public class GameProgress implements Serializable{
         try {
             try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
                 float[] loadedProgress = (float[]) in.readObject();
+                boolean[] loadedUnlocked = (boolean[]) in.readObject();
+                
                 this.levelProgress = loadedProgress;
-
-                if (listeners != null) {
-                    for (int i = 1; i <= NUM_LEVELS; i++) {
-                        for (ProgressListener listener : listeners) {
-                            listener.onProgressUpdated(i, levelProgress[i-1]);
-                        }
-                    }
-                }
-            return true;
+                this.levelUnlocked = loadedUnlocked;
+                return true;
             }
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Error loading from file: " + e.getMessage());
             e.printStackTrace();
             return false;
         }
-    }
-
-    public int getNumberOfLevels() {
-        return NUM_LEVELS;
     }
 }

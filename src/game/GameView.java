@@ -1,5 +1,7 @@
 package game;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
@@ -62,5 +64,13 @@ public class GameView extends UserView {
         int width = 250;
         g.drawRect(getWidth()/2-width/2, 10, width, 25);
         g.fillRect(getWidth()/2-width/2, 10, (int)(world.getWaveController().getProgress()*width), 25);
+
+        // Draw wave status message
+        String statusMessage = world.getWaveController().getStatusMessage();
+        if (statusMessage != null) {
+            g.setFont(new Font("Arial", Font.BOLD, 30));
+            g.setColor(Color.BLACK);
+            g.drawString(statusMessage, getWidth()/2-g.getFontMetrics().stringWidth(statusMessage)/2, getHeight()/3);
+        }
     }
 }

@@ -13,7 +13,7 @@ public class FastEnemy extends Enemy {
 
     @Override
     public void setLinearVelocity(Vec2 velocity) {
-        super.setLinearVelocity(new Vec2(velocity.x * 1.2f, velocity.y));
+        super.setLinearVelocity(new Vec2(velocity.x * 1.15f, velocity.y));
     }
 
     @Override

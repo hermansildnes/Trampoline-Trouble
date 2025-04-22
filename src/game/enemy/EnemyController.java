@@ -53,6 +53,30 @@ public class EnemyController implements StepListener {
             enemy.incrementFrameCounter();
         }
 
+
+        Vec2 avoidanceForce = new Vec2();
+        ArrayList<Enemy> nearbyEnemies = new ArrayList<>();
+        for (Enemy otherEnemy : enemy.getWorld().getWaveController().getEnemies()) {
+            if (otherEnemy != enemy) {
+                nearbyEnemies.add(otherEnemy);
+            }
+        }
+        
+        // Calculate avoidance force if enemies are too close
+        for (Enemy otherEnemy : nearbyEnemies) {
+            if (otherEnemy != enemy) {
+                float distance = enemy.getPosition().sub(otherEnemy.getPosition()).length();
+                if (distance < 3.0f) {  // Adjust threshold as needed
+                    Vec2 awayDirection = enemy.getPosition().sub(otherEnemy.getPosition());
+                    awayDirection.normalize();
+                    awayDirection.mulLocal(3.0f - distance);  // Stronger force when closer
+                    avoidanceForce.addLocal(awayDirection);
+                }
+            }
+        }
+
+
+
         // Calculate closest trampoline
         for (Trampoline trampoline: trampolines) {
             if (closestTrampoline == null) {

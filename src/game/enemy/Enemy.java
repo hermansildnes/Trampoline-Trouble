@@ -1,6 +1,8 @@
 package game.enemy;
 
+import java.lang.reflect.Field;
 import org.jbox2d.common.Vec2;
+import org.jbox2d.dynamics.Filter;
 
 import city.cs.engine.*;
 import game.Animatable;
@@ -25,6 +27,40 @@ public abstract class Enemy extends Animatable {
 
     public Enemy(Level world, Vec2 position, String spritePath) {
         super(world, new CircleShape(1f), spritePath);
+
+        try {
+            Filter filter = new Filter();
+            filter.categoryBits = 0x0002;
+            filter.maskBits = (short)(0xFFFF & ~0x0002); 
+            
+            // Get fixtures from body class
+            java.lang.reflect.Method getFixturesMethod = 
+                city.cs.engine.Body.class.getDeclaredMethod("getFixtures");
+            getFixturesMethod.setAccessible(true);
+            Object fixturesObj = getFixturesMethod.invoke(this);
+            
+            // Access getBox2DFixture through reflection
+            java.lang.reflect.Method getBox2DFixtureMethod = 
+                city.cs.engine.Fixture.class.getDeclaredMethod("getBox2DFixture");
+            getBox2DFixtureMethod.setAccessible(true);
+            
+            Iterable<Object> fixtures = (Iterable<Object>) fixturesObj;
+            
+            // Apply filter to all fixtures
+            for (Object fixtureObj : fixtures) {
+                if (fixtureObj instanceof city.cs.engine.Fixture) {
+                    // Access the Box2DFixture through reflection
+                    org.jbox2d.dynamics.Fixture jbox2dFixture = 
+                        (org.jbox2d.dynamics.Fixture) getBox2DFixtureMethod.invoke(fixtureObj);
+    
+                    jbox2dFixture.setFilterData(filter);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Failed to set collision filter: " + e.getMessage());
+            e.printStackTrace();
+        }
+
 
         this.addCollisionListener(new EnemyCollisionListener(this));
         this.setPosition(position);
