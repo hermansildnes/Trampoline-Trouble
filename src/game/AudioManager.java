@@ -8,28 +8,22 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 
-public class AudioManager {
-    private static AudioManager instance;
-    
+public class AudioManager {    
     private Map<String, SoundClip> musicTracks;
+    private Map<String, SoundClip> soundEffects;
     
     private String currentMusic;
     
-    // Volume from 0.0 - 1.0
     private float volume;
-    
+    private float sfxVolume;
 
-    private AudioManager() {
+    public AudioManager() {
         musicTracks = new HashMap<>();
+        soundEffects = new HashMap<>();
         volume = 0.5f;
+        sfxVolume = 0.7f;
     }
     
-    public static AudioManager getInstance() {
-        if (instance == null) {
-            instance = new AudioManager();
-        }
-        return instance;
-    }
     
 
     public void loadMusic(String name, String filePath) {
@@ -45,6 +39,19 @@ public class AudioManager {
             e.printStackTrace();
         }
     }
+
+    public void loadSoundEffect(String name, String filePath) {
+        try {
+            if (!soundEffects.containsKey(name)) {
+                SoundClip soundEffect = new SoundClip(filePath);
+                soundEffects.put(name, soundEffect);
+                setVolume(soundEffect);
+            }
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            System.out.println("Error loading sound effect file: " + filePath);
+            e.printStackTrace();
+        }
+    }
     
 
     public void playMusic(String name) {
@@ -54,6 +61,14 @@ public class AudioManager {
         if (music != null) {
             music.loop();
             currentMusic = name;
+        }
+    }
+
+    public void playSoundEffect(String name) {
+        SoundClip soundEffect = soundEffects.get(name);
+        if (soundEffect != null) {
+            soundEffect.stop();
+            soundEffect.play();
         }
     }
     
@@ -90,8 +105,33 @@ public class AudioManager {
             }
         }
     }
+
+    public void setSfxVolume(float volume) {
+        if (volume < 0.0f) volume = 0.0f;
+        if (volume > 1.0f) volume = 1.0f;
+        
+        this.sfxVolume = volume;
+        
+        for (SoundClip clip : soundEffects.values()) {
+            setVolume(clip);
+        }
+    }
+
+
     
     public float getVolume() {
         return volume;
+    }
+
+    public float getSfxVolume() {
+        return sfxVolume;
+    }
+
+    public boolean isMusicPlaying(String name) {
+        return currentMusic != null && currentMusic.equals(name);
+    }
+
+    public String getCurrentMusic() {
+        return currentMusic;
     }
 }

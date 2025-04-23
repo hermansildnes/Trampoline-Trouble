@@ -37,9 +37,7 @@ public abstract class Equipment {
         }
     }
     
-    public void use(Vec2 mousePosition) {
-        updateEnemies();
-    }
+    public abstract void use(Vec2 mousePosition);
 
 
 }

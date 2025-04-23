@@ -14,6 +14,7 @@ public class TrampolineSensorListener implements SensorListener {
     public void beginContact(SensorEvent e) {
         if (e.getContactBody() instanceof Player player) {
             player.jump(20);
+            player.getWorld().getGame().getAudioManager().playSoundEffect("bounce");
                 
         }
         if (e.getContactBody() instanceof Enemy enemy) {

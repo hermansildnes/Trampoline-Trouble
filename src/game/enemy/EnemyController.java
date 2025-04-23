@@ -53,30 +53,6 @@ public class EnemyController implements StepListener {
             enemy.incrementFrameCounter();
         }
 
-
-        Vec2 avoidanceForce = new Vec2();
-        ArrayList<Enemy> nearbyEnemies = new ArrayList<>();
-        for (Enemy otherEnemy : enemy.getWorld().getWaveController().getEnemies()) {
-            if (otherEnemy != enemy) {
-                nearbyEnemies.add(otherEnemy);
-            }
-        }
-        
-        // Calculate avoidance force if enemies are too close
-        for (Enemy otherEnemy : nearbyEnemies) {
-            if (otherEnemy != enemy) {
-                float distance = enemy.getPosition().sub(otherEnemy.getPosition()).length();
-                if (distance < 3.0f) {  // Adjust threshold as needed
-                    Vec2 awayDirection = enemy.getPosition().sub(otherEnemy.getPosition());
-                    awayDirection.normalize();
-                    awayDirection.mulLocal(3.0f - distance);  // Stronger force when closer
-                    avoidanceForce.addLocal(awayDirection);
-                }
-            }
-        }
-
-
-
         // Calculate closest trampoline
         for (Trampoline trampoline: trampolines) {
             if (closestTrampoline == null) {
@@ -94,6 +70,35 @@ public class EnemyController implements StepListener {
         // Calculate time needed to reach trampoline.position.x
         float distanceToTrampolineX = Math.abs(enemy.getPosition().x - closestTrampoline.getPosition().x);
         double timeToReachTrampolineX = distanceToTrampolineX / this.movementSpeed;
+
+        // More aggressive stuck detection - check for minimal movement
+        boolean isStuck = Math.abs(enemy.getLinearVelocity().x) < 0.8f && 
+                        Math.abs(enemy.getLinearVelocity().y) < 0.8f;
+
+        boolean stuckOnTrampoline = false;
+        if (closestTrampoline != null && isStuck) {
+            // If close to the closest trampoline and stuck
+            if (Math.abs(closestTrampoline.getPosition().x - enemy.getPosition().x) < 2.0f && Math.abs(closestTrampoline.getPosition().y - enemy.getPosition().y) < 2.0f) {
+                stuckOnTrampoline = true;
+                
+                // Determine which side of the trampoline the enemy is on
+                float dx = enemy.getPosition().x - closestTrampoline.getPosition().x;
+                float dy = enemy.getPosition().y - closestTrampoline.getPosition().y;
+                
+                // Apply force away from the trampoline
+                float nudgeX = dx == 0 ? (Math.random() > 0.5 ? 3.0f : -3.0f) : Math.signum(dx) * 3.0f;
+                float nudgeY = dy >= 0 ? 6.0f : -1.0f; // Push up if above, down if below
+                
+                // Apply a strong impulse to escape
+                enemy.applyImpulse(new Vec2(nudgeX, nudgeY));
+                enemy.setLinearVelocity(new Vec2(nudgeX * 2, nudgeY));
+            }
+        }
+
+        // Skip normal movement if we're unsticking from a trampoline to avoid negative feedback loop
+        if (stuckOnTrampoline) {
+            return;
+        }
 
         // Pathfind to nearest trampoline if necessary to survive
         if (timeToReachTrampolineY <= timeToReachTrampolineX+0.3 && enemy.getLinearVelocity().y <= 0) {

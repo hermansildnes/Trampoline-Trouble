@@ -68,7 +68,7 @@ public class MenuManager {
         frame.setLocationByPlatform(true);
         frame.setResizable(false);
 
-        audioManager = AudioManager.getInstance();
+        audioManager = new AudioManager();
         loadAudio();
 
         gameProgress = new GameProgress();
@@ -130,12 +130,14 @@ public class MenuManager {
 
     void startGame(int levelNumber) {
 
-        audioManager.playMusic("level" + levelNumber);
+        if (!audioManager.isMusicPlaying("level" + levelNumber)) {
+            audioManager.playMusic("level" + levelNumber);
+        }
 
         previousPanel = currentPanel;
         currentPanel = GAME_PANEL;
         
-        game = new Game(levelNumber, this, leftKey, rightKey, downKey);
+        game = new Game(levelNumber, this, audioManager, leftKey, rightKey, downKey);
         GameView gameView = game.getGameView();
         cardPanel.add(gameView, GAME_PANEL);
         cardLayout.show(cardPanel, GAME_PANEL);
@@ -658,6 +660,10 @@ public class MenuManager {
         audioManager.loadMusic("level1", "data/assets/music/level1/soundtrack.wav");
         audioManager.loadMusic("level2", "data/assets/music/level2/soundtrack.wav");
         audioManager.loadMusic("level3", "data/assets/music/level3/soundtrack.wav");
+
+        audioManager.loadSoundEffect("bounce", "data/assets/soundeffects/bounce.wav");
+        audioManager.loadSoundEffect("shoot", "data/assets/soundeffects/shoot.wav");
+        audioManager.loadSoundEffect("collect", "data/assets/soundeffects/collected.wav");
     }
     
     public void resumeGame() {
@@ -670,7 +676,12 @@ public class MenuManager {
     public void showPanel(String panelName) {
         previousPanel = currentPanel;
         currentPanel = panelName;
-        audioManager.playMusic("mainmenu");
+        
+        if (panelName.equals("Main Menu")) {
+            if (previousPanel.equals(GAME_PANEL) || previousPanel.equals("Victory") || previousPanel.equals("Game Over")) {
+                audioManager.playMusic("mainmenu");    
+            }
+        }
 
         if (panelName.equals("Select Level")) {
             cardPanel.remove(cardPanel.getComponent(1));

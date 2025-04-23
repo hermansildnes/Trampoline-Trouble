@@ -11,17 +11,23 @@ import game.player.Player;
  * Specifies ammunition and how to use LaserGun collectible
  */
 public class LaserGun extends Equipment {
+    private boolean showLaser = false;
+    private Vec2 laserEnd;
 
     public LaserGun(Player player) {
         super(player);
         this.ammunition = 15;
+        this.laserEnd = player.getPosition();
         this.icon = new ImageIcon("data/assets/environment/collectibles/lasergun.png").getImage();
     
     }
 
     @Override
     public void use(Vec2 mousePosition) {
+        laserEnd = mousePosition;
         updateEnemies();
+        player.getWorld().getGame().getAudioManager().playSoundEffect("shoot");
+        player.getWorld().getGame().getGameView().addScreenShake(0.075f);
         ammunition--;
         float enemyRadius = 1.0f;
         // Calculate vector from player to mouse and normalize it
@@ -47,9 +53,27 @@ public class LaserGun extends Equipment {
                 }
             }
         }
+        showLaser = true;
+
+        new java.util.Timer().schedule(
+            new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    showLaser = false;
+                }
+            },
+            200  // 50ms before the destroy timer fires
+        );
     }
     public void addAmmo(int ammo) {
         this.ammunition += ammo;
     }
 
+    public boolean isLaserVisible() {
+        return showLaser;
+    }
+
+    public Vec2 getLaserEnd() {
+        return laserEnd;
+    }
 }

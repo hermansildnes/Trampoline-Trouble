@@ -1,6 +1,5 @@
 package game.enemy;
 
-import java.lang.reflect.Field;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Filter;
 
@@ -101,30 +100,20 @@ public abstract class Enemy extends Animatable {
         isDying = true;
         this.setLinearVelocity(new Vec2(0, 0));
         this.startAnimation(AnimationState.DEATH);
-        Enemy enemy = this;
         this.healthbar.destroy();
-
+        Enemy enemy = this;
+        
+        // Single timer that does everything at once
         new java.util.Timer().schedule(
-        new java.util.TimerTask() {
-            @Override
-            public void run() {
-                enemy.removeAllImages();
-                enemy.setPosition(new Vec2(-1000, -1000)); // Janky but works :)
-            }
-        },
-        getDeathAnimationDuration() - 50  // 50ms before the destroy timer fires
-        );
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        enemy.destroy();
-                        enemy.getWorld().getWaveController().removeEnemy(enemy);
-
-                    }
-                },
-                
-                getDeathAnimationDuration() + 256// frames per animation * steps per frame * milliseconds per step
+            new java.util.TimerTask() {
+                @Override
+                public void run() {
+                    enemy.setPosition(new Vec2(-1000, -1000)); // Janky but works :)
+                    enemy.getWorld().getWaveController().removeEnemy(enemy);
+                    enemy.destroy();
+                }
+            },
+            getDeathAnimationDuration()
         );
     }
 

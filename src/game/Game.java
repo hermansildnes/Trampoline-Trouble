@@ -13,6 +13,7 @@ import game.worlds.Level3;
 
 public class Game implements StepListener{
     private MenuManager menuManager;
+    private AudioManager audioManager;
     private Level world;
     private GameView view;
     private KeyHandler keyHandler;
@@ -24,8 +25,9 @@ public class Game implements StepListener{
     private boolean isPaused = false;
     private int currentLevel;
 
-    public Game(int levelNumber, MenuManager menuManager, int leftKey, int rightKey, int downKey) {
+    public Game(int levelNumber, MenuManager menuManager, AudioManager audioManager, int leftKey, int rightKey, int downKey) {
         this.menuManager = menuManager;
+        this.audioManager = audioManager;
         this.leftKey = leftKey;
         this.rightKey = rightKey;
         this.downKey = downKey;
@@ -151,4 +153,7 @@ public class Game implements StepListener{
         menuManager.showVictoryPanel();
     }
 
+    public AudioManager getAudioManager() {
+        return audioManager;
+    }
 }

@@ -96,6 +96,10 @@ public class Player extends Animatable {
       }
    }
 
+   public Equipment getCurrentEquipment() {
+      return equipment;
+   }
+
    @Override
    public Level getWorld() {
       return (Level) super.getWorld();
