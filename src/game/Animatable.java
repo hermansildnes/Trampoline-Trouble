@@ -65,31 +65,43 @@ public abstract class Animatable extends Walker{
      }
 
      public void startAnimation(AnimationState state) {
-        currentState = state;
-        isAnimating = true;
-        currentFrame = 0;
-        frameCounter = 0;
-        updateAnimation();
+         this.removeAllImages();
+         currentState = state;
+         isAnimating = true;
+         currentFrame = 0;
+         frameCounter = 0;
+         updateAnimation();
      }
 
      // Update the entity with the correct sprite depending on the current 
      // frame of the animation and the direction it should face.
-      private void updateAnimation() {
-        this.removeAllImages();
-        if (currentState == AnimationState.NEUTRAL || !isAnimating) {
-           this.addImage(direction.equals("right") ? neutralRight : neutralLeft);
-           return;
-        }
+     private void updateAnimation() {
+         this.removeAllImages();
+         if (currentState == AnimationState.NEUTRAL || !isAnimating) {
+            this.addImage(direction.equals("right") ? neutralRight : neutralLeft);
+            return;
+         }
   
-        Map<AnimationState, BodyImage[]> animations = directionAnimations.get(direction);
-        BodyImage[] currentAnimation = animations.get(currentState);
-        if (currentFrame < currentAnimation.length) {
-           this.addImage(currentAnimation[currentFrame]);
-        } else {
-           isAnimating = false;
-           this.addImage(direction.equals("right") ? neutralRight : neutralLeft);
-        }
-     }
+         Map<AnimationState, BodyImage[]> animations = directionAnimations.get(direction);
+         BodyImage[] currentAnimation = animations.get(currentState);
+   
+         if (currentFrame < currentAnimation.length) {
+            this.addImage(currentAnimation[currentFrame]);
+         } else {
+            // Special handling for death animation - don't reset to neutral
+            if (currentState == AnimationState.DEATH) {
+               // Keep showing the last frame of death animation
+               if (currentAnimation.length > 0) {
+                     this.addImage(currentAnimation[currentAnimation.length - 1]);
+               }
+               // Don't set isAnimating to false for death animations
+            } else {
+               // For non-death animations, return to neutral state
+               this.addImage(direction.equals("right") ? neutralRight : neutralLeft);
+               isAnimating = false;
+               }
+         }
+   }
 
      public void incrementFrameCounter() {
         if (!isAnimating) return;
@@ -108,6 +120,10 @@ public abstract class Animatable extends Walker{
   
      public boolean isAnimating() {
         return isAnimating;
+     }
+
+     public void stopAnimation() {
+         isAnimating = false;
      }
 
      public void setFacingLeft(boolean facingLeft) {

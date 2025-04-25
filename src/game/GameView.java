@@ -18,7 +18,7 @@ import game.worlds.Level;
 
 public class GameView extends UserView {
     private final Level world;
-    private final Image background;
+    private final Image layer1;
     private final Image[] healthImages;
     private final Image layer2;
     private final Image layer3;
@@ -35,7 +35,7 @@ public class GameView extends UserView {
         // Load necessary files
         //background = new ImageIcon("data/assets/backgrounds/background_glacial_mountains_lightened.png").getImage();
         //background = new ImageIcon("data/assets/backgrounds/mountains-dusk.png").getImage();
-        background = new ImageIcon("data/assets/backgrounds/level" + world.getLevelNumber() + "/layer1.png").getImage();
+        layer1 = new ImageIcon("data/assets/backgrounds/level" + world.getLevelNumber() + "/layer1.png").getImage();
         layer2 = new ImageIcon("data/assets/backgrounds/level" + world.getLevelNumber() + "/layer2.png").getImage();
         layer3 = new ImageIcon("data/assets/backgrounds/level" + world.getLevelNumber() + "/layer3.png").getImage();
         healthImages = new Image[]{
@@ -51,8 +51,8 @@ public class GameView extends UserView {
     protected void paintBackground(Graphics2D g) {
         // Set the background
         AffineTransform transform = g.getTransform();
-        transform.scale((float)getWidth()/background.getWidth(this), (float)getHeight()/background.getHeight(this));
-        g.drawImage(background, transform, this);
+        transform.scale((float)getWidth()/layer1.getWidth(this), (float)getHeight()/layer1.getHeight(this));
+        g.drawImage(layer1, transform, this);
         g.drawImage(layer2, transform, this);
         g.drawImage(layer3, transform, this);
     }
@@ -108,9 +108,46 @@ public class GameView extends UserView {
                 g.drawLine((int) playerPosition.x, (int) playerPosition.y, (int) laserEnd.x, (int) laserEnd.y);
             }
         }
+
+        if (damageFlash) {
+            // Save the current composite
+            java.awt.Composite originalComposite = g.getComposite();
+            
+            // Set a semi-transparent red overlay
+            g.setComposite(java.awt.AlphaComposite.getInstance(
+                java.awt.AlphaComposite.SRC_OVER, damageFlashAlpha));
+            g.setColor(new Color(255, 0, 0));
+            g.fillRect(0, 0, getWidth(), getHeight());
+            
+            // Restore the original composite
+            g.setComposite(originalComposite);
+        }
     }
 
 
+
+    private boolean damageFlash = false;
+    private float damageFlashAlpha = 0.0f;
+    private long damageFlashStartTime = 0;
+    private static final long DAMAGE_FLASH_DURATION = 500; // 1 second duration
+
+    public void addDamageFlash() {
+        damageFlash = true;
+        damageFlashAlpha = 0.2f;
+        damageFlashStartTime = System.currentTimeMillis();
+        
+        new javax.swing.Timer(16, e -> {
+            long elapsed = System.currentTimeMillis() - damageFlashStartTime;
+            if (elapsed > DAMAGE_FLASH_DURATION) {
+                damageFlash = false;
+                ((javax.swing.Timer)e.getSource()).stop();
+            } else {
+                // Calculate alpha based on time elapsed (fade out effect)
+                damageFlashAlpha = 0.2f * (1.0f - (float)elapsed / DAMAGE_FLASH_DURATION);
+                repaint();
+            }
+        }).start();
+    }
 
 
     public void addScreenShake(float amount) {

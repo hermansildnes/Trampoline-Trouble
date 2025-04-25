@@ -119,6 +119,8 @@ public class Player extends Animatable {
          die();
       } else if (!isDying) {
          this.health -= damage;
+         getWorld().getGame().getAudioManager().playSoundEffect("damage");
+         getWorld().getGame().getGameView().addDamageFlash();
       }
    }
    

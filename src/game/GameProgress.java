@@ -14,7 +14,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class GameProgress implements Serializable {
-    private static final int NUM_LEVELS = 3;
+    private static final int NUM_LEVELS = 4;
     
     private float[] levelProgress;
     private boolean[] levelUnlocked;
@@ -28,7 +28,7 @@ public class GameProgress implements Serializable {
         levelUnlocked = new boolean[NUM_LEVELS];
 
         levelUnlocked[0] = true;
-        levelUnlocked[2] = true;
+        
     }
 
     public boolean updateLevelProgress(int levelNumber, float progress) {
@@ -46,6 +46,12 @@ public class GameProgress implements Serializable {
             return true;    
         }
         return false;
+    }
+
+    public void unlockAllLevels() {
+        for (int i = 0; i < NUM_LEVELS; i++) {
+            levelUnlocked[i] = true;
+        }
     }
 
     public float getLevelProgress(int levelNumber) {

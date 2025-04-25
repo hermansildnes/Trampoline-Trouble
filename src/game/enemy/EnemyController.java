@@ -33,6 +33,11 @@ public class EnemyController implements StepListener {
 
     @Override
     public void preStep(StepEvent e) {
+        
+        if (enemy.isAnimating()) {
+            enemy.incrementFrameCounter();
+        }
+
         if (enemy.isDying) {
             return;
         }
@@ -40,7 +45,7 @@ public class EnemyController implements StepListener {
         enemy.update(e);
 
         // Sets the position of the healthbar right above the enemy
-        enemy.getHealthbar().setPosition(enemy.getPosition().add(new Vec2(0, 2f)));
+        enemy.updateHealthBarPositions();
         
         // Set animation direction and update animation
         if (enemy.getPosition().x < player.getPosition().x) {
@@ -49,9 +54,6 @@ public class EnemyController implements StepListener {
             enemy.setFacingLeft(true);
         }
 
-        if (enemy.isAnimating()) {
-            enemy.incrementFrameCounter();
-        }
 
         // Calculate closest trampoline
         for (Trampoline trampoline: trampolines) {

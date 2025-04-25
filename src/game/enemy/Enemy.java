@@ -1,5 +1,7 @@
 package game.enemy;
 
+import java.util.ArrayList;
+
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.Filter;
 
@@ -13,8 +15,10 @@ public abstract class Enemy extends Animatable {
     protected int health;
     protected boolean isDying = false;
     protected boolean pathFinding = true;
-    protected StaticBody healthbar;
+    protected ArrayList<StaticBody> healthbars;
     protected String spritePath;
+    private static final int MAX_HEALTH_PER_BAR = 5;
+    private static final float HEALTH_BAR_SPACING = 0.7f;
     
     private static final BodyImage[] healthImages = {
         new BodyImage("data/assets/uibars/1hp.png", 2f),
@@ -24,8 +28,8 @@ public abstract class Enemy extends Animatable {
         new BodyImage("data/assets/uibars/5hp.png", 2f),
     };
 
-    public Enemy(Level world, Vec2 position, String spritePath) {
-        super(world, new CircleShape(1f), spritePath);
+    public Enemy(Level world, Shape shape, Vec2 position, String spritePath) {
+        super(world, shape, spritePath);
 
         try {
             Filter filter = new Filter();
@@ -66,7 +70,13 @@ public abstract class Enemy extends Animatable {
 
         loadAnimations();
 
-        this.healthbar = new StaticBody(world);        
+        this.healthbars = new ArrayList<>();
+        StaticBody primaryBar = new StaticBody(world);
+        this.healthbars.add(primaryBar);        
+    }
+
+    public Enemy(Level world, Vec2 position, String spritePath) {
+        this(world, new CircleShape(1f), position, spritePath);
     }
 
     protected abstract void loadAnimations();
@@ -85,14 +95,14 @@ public abstract class Enemy extends Animatable {
     }
 
     public void decreaseHealth(int damage) {
+        getWorld().getGame().getAudioManager().playSoundEffect("damage");
         // Destroy the enemy if health is 0, but only after death animation has finished
         if (this.health - damage <= 0) {
             die();
         } else{
             this.health -= damage;
             startAnimation(AnimationState.DAMAGE);
-            healthbar.removeAllImages();
-            healthbar.addImage(healthImages[health - 1]);
+            updateHealthBars();
         }
     }
 
@@ -100,7 +110,12 @@ public abstract class Enemy extends Animatable {
         isDying = true;
         this.setLinearVelocity(new Vec2(0, 0));
         this.startAnimation(AnimationState.DEATH);
-        this.healthbar.destroy();
+
+        for (StaticBody healthbar : healthbars) {
+            healthbar.destroy();
+        }
+        healthbars.clear();
+
         Enemy enemy = this;
         
         // Single timer that does everything at once
@@ -108,8 +123,10 @@ public abstract class Enemy extends Animatable {
             new java.util.TimerTask() {
                 @Override
                 public void run() {
-                    enemy.setPosition(new Vec2(-1000, -1000)); // Janky but works :)
+                    enemy.stopAnimation();
                     enemy.getWorld().getWaveController().removeEnemy(enemy);
+                    enemy.setGravityScale(0);
+                    enemy.setPosition(new Vec2(-1000, -1000)); // Janky but works :)
                     enemy.destroy();
                 }
             },
@@ -117,6 +134,57 @@ public abstract class Enemy extends Animatable {
         );
     }
 
+    public void updateHealthBarPositions() {
+        Vec2 position = this.getPosition().add(new Vec2(0, 2f));
+
+        for (int i = 0; i < healthbars.size(); i++) {
+            StaticBody bar = healthbars.get(i);
+            float yOffset = HEALTH_BAR_SPACING * (healthbars.size() - i - 1);
+            bar.setPosition(new Vec2(position.x, position.y + yOffset));
+        }
+    }
+
+    private void updateHealthBars() {
+        int fullBars = (health-1) / MAX_HEALTH_PER_BAR;
+        int remainingHealth = health - (fullBars * MAX_HEALTH_PER_BAR);
+    
+        if (remainingHealth == 0 && health > 0) {
+            fullBars--;
+            remainingHealth = MAX_HEALTH_PER_BAR;
+        }
+    
+        int numberOfBars = fullBars + 1;
+        
+        // Add new bars at the bottom if needed
+        while (healthbars.size() < numberOfBars) {
+            StaticBody newBar = new StaticBody(getWorld());
+            healthbars.add(0, newBar); // Add at the top (index 0)
+        }
+    
+        // Remove excess bars from the top (index 0) if needed
+        // Fix: Change this to remove from index 0 (top) until we have the right number
+        while (healthbars.size() > numberOfBars) {
+            // Remove from index 0 (top bar)
+            StaticBody bar = healthbars.remove(0);
+            bar.destroy();
+        }
+    
+        // Update health bar images from top to bottom
+        for (int i = 0; i < healthbars.size(); i++) {
+            StaticBody bar = healthbars.get(i);
+            bar.removeAllImages();
+    
+            if (i < fullBars) {
+                // Full health bars (5hp)
+                bar.addImage(healthImages[MAX_HEALTH_PER_BAR - 1]);
+            } else if (i == fullBars) {
+                // Partial health bar
+                bar.addImage(healthImages[remainingHealth - 1]);
+            }
+        }
+    
+        updateHealthBarPositions();
+    }
     protected abstract int getDeathAnimationDuration();
 
     public boolean isDying() {
@@ -125,10 +193,7 @@ public abstract class Enemy extends Animatable {
 
     public void setHealth(int health) {
         this.health = health;
-        if (healthbar != null) {
-            healthbar.removeAllImages();
-            healthbar.addImage(healthImages[health - 1]);
-        }
+        updateHealthBars();
     }
 
     public int getHealth() {
@@ -136,7 +201,14 @@ public abstract class Enemy extends Animatable {
     }
 
     public StaticBody getHealthbar() {
-        return healthbar;
+        if (healthbars.isEmpty()) {
+            return null;
+        }
+        return healthbars.get(healthbars.size() - 1);
+    }
+
+    public ArrayList<StaticBody> getHealthbars() {
+        return healthbars;
     }
 
     public void setPathFinding(boolean pathFinding) {

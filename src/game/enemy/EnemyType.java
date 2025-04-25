@@ -7,7 +7,8 @@ import game.worlds.Level;
 public enum EnemyType {
     BASE,
     FAST,
-    SHOOTING;
+    SHOOTING,
+    BOSS;
 
     public Enemy create(Level level, Vec2 position) {
         switch (this) {
@@ -16,9 +17,9 @@ public enum EnemyType {
             case FAST:
                 return new FastEnemy(level, position);
             case SHOOTING:
-                System.out.println("Creating Shooting Enemy");
-
                 return new ShootingEnemy(level, position);
+            case BOSS:
+                return new BossEnemy(level, position);
             default:
                 return new BaseEnemy(level, position);
         }

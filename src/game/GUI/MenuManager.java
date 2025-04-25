@@ -1,9 +1,11 @@
 package game.GUI;
 
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -16,7 +18,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.border.EmptyBorder;
 
 import game.AudioManager;
 import game.Game;
@@ -201,45 +205,83 @@ public class MenuManager {
         return panel;
     }
 
-    private JPanel createLevelSelectMenu() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBackground(COSMIC_LATTE);
-        
-        // Select level title
+        private JPanel createLevelSelectMenu() {
+        // Use BorderLayout for overall structure
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10)); // Gaps between components
+        mainPanel.setBackground(COSMIC_LATTE);
+        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20)); // Add padding around the panel
+
+        // --- Title Panel (North) ---
         JLabel titleLabel = new JLabel("Select Level");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
         titleLabel.setForeground(TEXT_COLOR);
-        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
-        // Panel for level buttons and progress bars
-        JPanel levelsPanel = new JPanel();
-        levelsPanel.setLayout(new BoxLayout(levelsPanel, BoxLayout.Y_AXIS));
-        levelsPanel.setBackground(COSMIC_LATTE);
-        levelsPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        
-        // Create level panels with buttons and progress bars
-        levelsPanel.add(createLevelPanel(1));
-        levelsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        levelsPanel.add(createLevelPanel(2));
-        levelsPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        levelsPanel.add(createLevelPanel(3));
-        
-        // Back button
+        titleLabel.setHorizontalAlignment(JLabel.CENTER); // Center title
+        mainPanel.add(titleLabel, BorderLayout.NORTH);
+
+        // --- Levels Panel (Center) ---
+        JPanel levelsContentPanel = new JPanel(); // Panel to hold the level rows
+        levelsContentPanel.setLayout(new BoxLayout(levelsContentPanel, BoxLayout.Y_AXIS));
+        levelsContentPanel.setBackground(COSMIC_LATTE);
+        // levelsContentPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Alignment within BoxLayout
+
+        // Add level panels with spacing
+        levelsContentPanel.add(Box.createVerticalGlue()); // Push content to center vertically
+        levelsContentPanel.add(createLevelPanel(1));
+        levelsContentPanel.add(Box.createRigidArea(new Dimension(0, 15))); // Reduced spacing
+        levelsContentPanel.add(createLevelPanel(2));
+        levelsContentPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        levelsContentPanel.add(createLevelPanel(3));
+        levelsContentPanel.add(Box.createRigidArea(new Dimension(0, 15)));
+        levelsContentPanel.add(createLevelPanel(4));
+        levelsContentPanel.add(Box.createVerticalGlue()); // Push content to center vertically
+
+        // Add the levels panel inside a ScrollPane in case of future expansion
+        JScrollPane scrollPane = new JScrollPane(levelsContentPanel);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setBorder(null); // Remove scroll pane border
+        scrollPane.getViewport().setBackground(COSMIC_LATTE); // Match background
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+
+        // --- Bottom Buttons Panel (South) ---
+        JPanel bottomPanel = new JPanel(new BorderLayout()); // Use BorderLayout for left/right alignment
+        bottomPanel.setBackground(COSMIC_LATTE);
+
+        // Back button (aligned left)
         JButton backButton = createLargeButton("Back");
-        backButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-        backButton.addActionListener(e -> showPanel(previousPanel));
-        
-        // Add all components together
-        panel.add(Box.createVerticalGlue());
-        panel.add(titleLabel);
-        panel.add(Box.createRigidArea(new Dimension(0, 50)));
-        panel.add(levelsPanel);
-        panel.add(Box.createRigidArea(new Dimension(0, 60)));
-        panel.add(backButton);
-        panel.add(Box.createVerticalGlue());
-        
-        return panel;
+        // Make back button slightly smaller if needed
+        // backButton.setFont(new Font("Arial", Font.BOLD, 20));
+        // backButton.setPreferredSize(new Dimension(150, 40));
+        backButton.addActionListener(e -> showPanel(previousPanel)); // Use previousPanel state
+        bottomPanel.add(backButton, BorderLayout.WEST);
+
+        // Unlock All button (aligned right)
+        JButton unlockAllButton = new JButton("Unlock All");
+        unlockAllButton.setFont(new Font("Arial", Font.PLAIN, 12)); // Smaller font
+        unlockAllButton.setToolTipText("Unlock all levels (for testing)");
+        unlockAllButton.setMargin(new java.awt.Insets(2, 5, 2, 5)); // Smaller padding
+        unlockAllButton.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(frame,
+                    "Are you sure you want to unlock all levels?",
+                    "Unlock All Levels",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.WARNING_MESSAGE);
+            if (confirm == JOptionPane.YES_OPTION) {
+                gameProgress.unlockAllLevels();
+                // Refresh the level select screen to show unlocked levels
+                showPanel("Select Level"); // This will recreate the panel via the logic in showPanel
+            }
+        });
+        // Panel to push the unlock button to the right
+        JPanel unlockButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+        unlockButtonPanel.setBackground(COSMIC_LATTE);
+        unlockButtonPanel.add(unlockAllButton);
+        bottomPanel.add(unlockButtonPanel, BorderLayout.EAST);
+
+
+        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+
+        return mainPanel;
     }
     
     private JPanel createPauseMenu() {
@@ -660,10 +702,13 @@ public class MenuManager {
         audioManager.loadMusic("level1", "data/assets/music/level1/soundtrack.wav");
         audioManager.loadMusic("level2", "data/assets/music/level2/soundtrack.wav");
         audioManager.loadMusic("level3", "data/assets/music/level3/soundtrack.wav");
+        audioManager.loadMusic("level4", "data/assets/music/level4/soundtrack.wav");
 
         audioManager.loadSoundEffect("bounce", "data/assets/soundeffects/bounce.wav");
-        audioManager.loadSoundEffect("shoot", "data/assets/soundeffects/shoot.wav");
+        audioManager.loadSoundEffect("damage", "data/assets/soundeffects/shoot.wav");
         audioManager.loadSoundEffect("collect", "data/assets/soundeffects/collected.wav");
+        audioManager.loadSoundEffect("laser", "data/assets/soundeffects/laser.wav");
+        audioManager.loadSoundEffect("victory", "data/assets/soundeffects/victory.wav");
     }
     
     public void resumeGame() {
@@ -674,7 +719,11 @@ public class MenuManager {
     }
 
     public void showPanel(String panelName) {
-        previousPanel = currentPanel;
+        if (!currentPanel.equals(panelName)) {
+            previousPanel = currentPanel;
+        }
+        
+        
         currentPanel = panelName;
         
         if (panelName.equals("Main Menu")) {

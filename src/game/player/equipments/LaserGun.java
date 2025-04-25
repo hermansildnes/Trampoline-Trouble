@@ -26,7 +26,7 @@ public class LaserGun extends Equipment {
     public void use(Vec2 mousePosition) {
         laserEnd = mousePosition;
         updateEnemies();
-        player.getWorld().getGame().getAudioManager().playSoundEffect("shoot");
+        player.getWorld().getGame().getAudioManager().playSoundEffect("laser");
         player.getWorld().getGame().getGameView().addScreenShake(0.075f);
         ammunition--;
         float enemyRadius = 1.0f;

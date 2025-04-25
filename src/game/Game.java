@@ -10,6 +10,7 @@ import game.worlds.Level;
 import game.worlds.Level1;
 import game.worlds.Level2;
 import game.worlds.Level3;
+import game.worlds.Level4;
 
 public class Game implements StepListener{
     private MenuManager menuManager;
@@ -60,6 +61,9 @@ public class Game implements StepListener{
                 break;
             case 3:
                 world = new Level3(this);
+                break;
+            case 4:
+                world = new Level4(this);
                 break;
             default:
                 world = new Level1(this);
@@ -146,10 +150,12 @@ public class Game implements StepListener{
     }
 
     public void victory() {
+        audioManager.playSoundEffect("victory");
         isPaused = true;
         if (world != null) {
             world.stop();
         }
+        audioManager.stopMusic();
         menuManager.showVictoryPanel();
     }
 

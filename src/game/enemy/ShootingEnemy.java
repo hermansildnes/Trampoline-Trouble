@@ -8,20 +8,22 @@ import game.worlds.Level;
 public class ShootingEnemy extends Enemy {
     private static final int health = 2;
 
-    private static final float SHOOTING_COOLDOWN = 3.0f;
+    private static final float SHOOTING_COOLDOWN = 1f;
 
     private float shootingTimer = 0;
     private boolean canShoot = true;
 
     public ShootingEnemy(Level world, Vec2 position) {
-        super(world, position, "data/assets/enemy/baseenemy/");
-        this.setHealth(health);    }
+        super(world, position, "data/assets/enemy/shootingenemy/");
+        this.setHealth(health);    
+    }
 
     @Override
     protected void loadAnimations() {
-        addAnimation(AnimationState.JUMP, "jump", 4);
+        addAnimation(AnimationState.JUMP, "jump", 2);
         addAnimation(AnimationState.DEATH, "death", 10);
-        addAnimation(AnimationState.DAMAGE, "damage", 4);
+        addAnimation(AnimationState.DAMAGE, "damage", 3);
+        addAnimation(AnimationState.ATTACK, "attack", 6);
     }
 
     @Override
@@ -46,14 +48,28 @@ public class ShootingEnemy extends Enemy {
     }
 
     private void shootAtPlayer() {
+
+        this.startAnimation(AnimationState.ATTACK);
+
         Vec2 playerPos = getWorld().getPlayer().getPosition();
         Vec2 enemyPos = getPosition();
-
-        float direction = Math.signum(playerPos.x - enemyPos.x);
-        Vec2 directionX = new Vec2(direction, 0);
         
-        EnemyBullet bullet = new EnemyBullet(getWorld(), enemyPos, directionX);
-
+        int direction = (playerPos.x > enemyPos.x) ? 1 : -1;
+        
+        Vec2 bulletPos = new Vec2(
+            enemyPos.x + direction * 0.6f,
+            enemyPos.y
+        );
+        
+        // Create bullet with proper direction
+        EnemyBullet bullet = new EnemyBullet(getWorld(), bulletPos, direction);
+        
+        // Play sound effect if available
+        if (getWorld().getGame().getAudioManager() != null) {
+            getWorld().getGame().getAudioManager().playSoundEffect("enemyshoot");
+        }
+        
+        // Reset shooting cooldown
         canShoot = false;
         shootingTimer = SHOOTING_COOLDOWN;
     }
