@@ -23,8 +23,7 @@ public class Level3Controller extends WaveController {
                 return config.add(EnemyType.BASE, 1)
                         .add(EnemyType.SHOOTING, 1);
             case 3:
-                return config.add(EnemyType.SHOOTING, 2)
-                        .add(EnemyType.FAST, 1);
+                return config.add(EnemyType.SHOOTING, 2);
             default:
                 return config.add(EnemyType.BASE, 1);
         }

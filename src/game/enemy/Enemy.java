@@ -28,8 +28,8 @@ public abstract class Enemy extends Animatable {
         new BodyImage("data/assets/uibars/5hp.png", 2f),
     };
 
-    public Enemy(Level world, Shape shape, Vec2 position, String spritePath) {
-        super(world, shape, spritePath);
+    public Enemy(Level world, Shape shape, Vec2 position, String spritePath, float size) {
+        super(world, shape, spritePath, size);
 
         try {
             Filter filter = new Filter();
@@ -77,6 +77,10 @@ public abstract class Enemy extends Animatable {
 
     public Enemy(Level world, Vec2 position, String spritePath) {
         this(world, new CircleShape(1f), position, spritePath);
+    }
+
+    public Enemy(Level world, Shape shape, Vec2 position, String spritePath) {
+        this(world, shape, position, spritePath, 4f);
     }
 
     protected abstract void loadAnimations();

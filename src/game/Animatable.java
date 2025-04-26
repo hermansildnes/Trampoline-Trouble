@@ -18,6 +18,7 @@ public abstract class Animatable extends Walker{
     protected BodyImage neutralRight;
     protected BodyImage neutralLeft;
     protected String direction = "right";
+    protected float size;
 
     private static final int  FRAMES_PER_ANIMATION = 4;
     // Allowed animationStates
@@ -37,15 +38,20 @@ public abstract class Animatable extends Walker{
    private int frameCounter = 0;
 
 
-    public Animatable(World world, Shape shape, String assetPath) {
+    public Animatable(World world, Shape shape, String assetPath, float size) {
         super(world, shape);
         this.assetPath = assetPath;
+        this.size = size;
         directionAnimations = new HashMap<>();
         directionAnimations.put("left", new HashMap<>());
         directionAnimations.put("right", new HashMap<>());
-        neutralRight = new BodyImage(assetPath + "right/neutral.png", 4);
-        neutralLeft = new BodyImage(assetPath + "left/neutral.png", 4);
+        neutralRight = new BodyImage(assetPath + "right/neutral.png", size);
+        neutralLeft = new BodyImage(assetPath + "left/neutral.png", size);
         this.addImage(neutralRight);
+    }
+
+    public Animatable(World world, Shape shape, String assetPath) {
+      this(world, shape, assetPath, 4);
     }
 
     // Allows for custom animations for different entities given name of animation and a frameCount
@@ -59,7 +65,7 @@ public abstract class Animatable extends Walker{
     private BodyImage[] loadAnimation(String direction, String prefix, int frameCount) {
         BodyImage[] frames = new BodyImage[frameCount];
         for (int i = 0; i < frameCount; i++) {
-           frames[i] = new BodyImage(assetPath +  direction + "/" + prefix + i + ".png", 4);
+           frames[i] = new BodyImage(assetPath +  direction + "/" + prefix + i + ".png", size);
         }
         return frames;
      }

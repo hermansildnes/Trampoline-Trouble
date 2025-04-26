@@ -2,6 +2,7 @@ package game.enemy;
 
 import org.jbox2d.common.Vec2;
 
+import city.cs.engine.CircleShape;
 import city.cs.engine.StepEvent;
 import game.worlds.Level;
 
@@ -14,7 +15,7 @@ public class ShootingEnemy extends Enemy {
     private boolean canShoot = true;
 
     public ShootingEnemy(Level world, Vec2 position) {
-        super(world, position, "data/assets/enemy/shootingenemy/");
+        super(world, new CircleShape(1f), position, "data/assets/enemy/shootingenemy/", 8f);
         this.setHealth(health);    
     }
 
@@ -64,10 +65,6 @@ public class ShootingEnemy extends Enemy {
         // Create bullet with proper direction
         EnemyBullet bullet = new EnemyBullet(getWorld(), bulletPos, direction);
         
-        // Play sound effect if available
-        if (getWorld().getGame().getAudioManager() != null) {
-            getWorld().getGame().getAudioManager().playSoundEffect("enemyshoot");
-        }
         
         // Reset shooting cooldown
         canShoot = false;

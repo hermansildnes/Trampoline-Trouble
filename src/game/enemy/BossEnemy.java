@@ -73,10 +73,6 @@ public class BossEnemy extends Enemy {
         // Create bullet with proper direction
         EnemyBullet bullet = new EnemyBullet(getWorld(), bulletPos, direction, new CircleShape(0.8f), bulletSprite, 0.8f*4);
         
-        // Play sound effect if available
-        if (getWorld().getGame().getAudioManager() != null) {
-            getWorld().getGame().getAudioManager().playSoundEffect("enemyshoot");
-        }
         
         // Reset shooting cooldown
         canShoot = false;

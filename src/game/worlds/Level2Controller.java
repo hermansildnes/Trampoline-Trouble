@@ -23,7 +23,7 @@ public class Level2Controller extends WaveController {
                 return config.add(EnemyType.BASE, 1)
                         .add(EnemyType.FAST, 1);
             case 3:
-                return config.add(EnemyType.FAST, 3);
+                return config.add(EnemyType.FAST, 2);
             default:
                 return config.add(EnemyType.BASE, 1);
         }
@@ -33,7 +33,7 @@ public class Level2Controller extends WaveController {
     @Override
     protected void spawnCollectible() {
         Vec2 position = new Vec2(random.nextInt(20)-10, random.nextInt(10)-5);
-        if (random.nextFloat() < 0.6f) {
+        if (random.nextFloat() < 0.5f) {
             new Collectible(level, position, Collectible.CollectibleType.HEALTHPACK);
         } else {
             new Collectible(level, position, Collectible.CollectibleType.LASERGUN);
