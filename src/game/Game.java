@@ -162,4 +162,8 @@ public class Game implements StepListener{
     public AudioManager getAudioManager() {
         return audioManager;
     }
+
+    public MenuManager getMenuManager() {
+        return menuManager;
+    }
 }

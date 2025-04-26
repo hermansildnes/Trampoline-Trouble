@@ -79,7 +79,7 @@ public class GameView extends UserView {
         // Draw wave status message
         String statusMessage = world.getWaveController().getStatusMessage();
         if (statusMessage != null) {
-            g.setFont(new Font("Arial", Font.BOLD, 30));
+            g.setFont(new Font(world.getGame().getMenuManager().getFont().getFontName(), Font.BOLD, 30));
             g.setColor(Color.BLACK);
             g.drawString(statusMessage, getWidth()/2-g.getFontMetrics().stringWidth(statusMessage)/2, getHeight()/3);
         }

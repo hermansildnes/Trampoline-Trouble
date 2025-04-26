@@ -7,8 +7,13 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.FontMetrics;
+import java.awt.GraphicsEnvironment;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -32,6 +37,8 @@ public class MenuManager {
     private static final String GAME_PANEL = "Game";
     private Color COSMIC_LATTE = new Color(255, 248, 231);
     private Color TEXT_COLOR = new Color(0, 0, 0);
+    private Font TEXT_FONT;
+    private String FONT_NAME;
     
     // UI components
     private Game game;
@@ -74,6 +81,8 @@ public class MenuManager {
 
         audioManager = new AudioManager();
         loadAudio();
+
+        loadCustomFont("data/assets/fonts/PressStart2P.ttf");
 
         gameProgress = new GameProgress();
 
@@ -163,7 +172,7 @@ public class MenuManager {
         
         // Game title
         JLabel gameName = new JLabel("Trampoline Trouble");
-        gameName.setFont(new Font("Arial", Font.BOLD, 36));
+        gameName.setFont(new Font(FONT_NAME, Font.BOLD, 36));
         gameName.setForeground(TEXT_COLOR);
         gameName.setAlignmentX(Component.CENTER_ALIGNMENT);
     
@@ -213,7 +222,7 @@ public class MenuManager {
 
         // --- Title Panel (North) ---
         JLabel titleLabel = new JLabel("Select Level");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        titleLabel.setFont(new Font(FONT_NAME, Font.BOLD, 36));
         titleLabel.setForeground(TEXT_COLOR);
         titleLabel.setHorizontalAlignment(JLabel.CENTER); // Center title
         mainPanel.add(titleLabel, BorderLayout.NORTH);
@@ -250,14 +259,14 @@ public class MenuManager {
         // Back button (aligned left)
         JButton backButton = createLargeButton("Back");
         // Make back button slightly smaller if needed
-        // backButton.setFont(new Font("Arial", Font.BOLD, 20));
+        // backButton.setFont(new Font(FONT_NAME", Font.BOLD, 20));
         // backButton.setPreferredSize(new Dimension(150, 40));
         backButton.addActionListener(e -> showPanel(previousPanel)); // Use previousPanel state
         bottomPanel.add(backButton, BorderLayout.WEST);
 
         // Unlock All button (aligned right)
         JButton unlockAllButton = new JButton("Unlock All");
-        unlockAllButton.setFont(new Font("Arial", Font.PLAIN, 12)); // Smaller font
+        unlockAllButton.setFont(new Font(FONT_NAME, Font.PLAIN, 12)); // Smaller font
         unlockAllButton.setToolTipText("Unlock all levels (for testing)");
         unlockAllButton.setMargin(new java.awt.Insets(2, 5, 2, 5)); // Smaller padding
         unlockAllButton.addActionListener(e -> {
@@ -291,7 +300,7 @@ public class MenuManager {
         
         // Pause title
         JLabel titleLabel = new JLabel("Game Paused");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        titleLabel.setFont(new Font(FONT_NAME, Font.BOLD, 36));
         titleLabel.setForeground(TEXT_COLOR);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
@@ -331,7 +340,7 @@ public class MenuManager {
         
         // Game Over title
         JLabel titleLabel = new JLabel("Game Over");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        titleLabel.setFont(new Font(FONT_NAME, Font.BOLD, 36));
         titleLabel.setForeground(TEXT_COLOR);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
@@ -344,7 +353,7 @@ public class MenuManager {
         
         // Level completion label
         JLabel progressLabel = new JLabel("Level Progress");
-        progressLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        progressLabel.setFont(new Font(FONT_NAME, Font.BOLD, 24));
         progressLabel.setForeground(TEXT_COLOR);
         progressLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
@@ -398,7 +407,7 @@ public class MenuManager {
         
         // Victory title
         JLabel titleLabel = new JLabel("Level Complete!");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        titleLabel.setFont(new Font(FONT_NAME, Font.BOLD, 36));
         titleLabel.setForeground(new Color(0, 128, 0)); // Green color for victory
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
@@ -411,7 +420,7 @@ public class MenuManager {
         
         // Level completion label
         JLabel progressLabel = new JLabel("Level Progress");
-        progressLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        progressLabel.setFont(new Font(FONT_NAME, Font.BOLD, 24));
         progressLabel.setForeground(TEXT_COLOR);
         progressLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
@@ -472,7 +481,7 @@ public class MenuManager {
         
         // Settings title
         JLabel titleLabel = new JLabel("Settings");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 36));
+        titleLabel.setFont(new Font(FONT_NAME, Font.BOLD, 36));
         titleLabel.setForeground(TEXT_COLOR);
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
@@ -491,7 +500,7 @@ public class MenuManager {
         
         // Volume label
         JLabel volumeLabel = new JLabel("Volume");
-        volumeLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        volumeLabel.setFont(new Font(FONT_NAME, Font.BOLD, 24));
         volumeLabel.setForeground(TEXT_COLOR);
         
         // Volume slider
@@ -515,7 +524,7 @@ public class MenuManager {
         
         // Key bindings title
         JLabel keybindingsLabel = new JLabel("Controls");
-        keybindingsLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        keybindingsLabel.setFont(new Font(FONT_NAME, Font.BOLD, 24));
         keybindingsLabel.setForeground(TEXT_COLOR);
         keybindingsLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         
@@ -613,12 +622,12 @@ public class MenuManager {
         
         // Action label
         JLabel label = new JLabel(actionName);
-        label.setFont(new Font("Arial", Font.PLAIN, 18));
+        label.setFont(new Font(FONT_NAME, Font.PLAIN, 18));
         label.setForeground(TEXT_COLOR);
         
         // Key button
         JButton keyButton = new JButton(defaultKey);
-        keyButton.setFont(new Font("Arial", Font.BOLD, 16));
+        keyButton.setFont(new Font(FONT_NAME, Font.BOLD, 16));
         keyButton.setFocusable(false);
         
         Dimension buttonSize = new Dimension(100, 30);
@@ -684,7 +693,6 @@ public class MenuManager {
     
     public JButton createLargeButton(String text) {
         JButton button = new JButton(text);
-        button.setFont(new Font("Arial", Font.BOLD, 24));
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         Dimension size = new Dimension(200, 50);
@@ -692,7 +700,41 @@ public class MenuManager {
         button.setMinimumSize(size);
         button.setMaximumSize(size);
 
+       int maxFontSize = 24;
+       int minFontSize = 12;
+       Font finalFont = null; 
+
+       for (int currentSize = maxFontSize; currentSize >= minFontSize; currentSize--) {
+           Font testFont = new Font(FONT_NAME, Font.BOLD, currentSize);
+
+           FontMetrics metrics = button.getFontMetrics(testFont);
+           int textWidth = metrics.stringWidth(text);
+
+
+           if (textWidth <= size.width-35) {
+               finalFont = testFont;
+               break;
+           }
+       }
+        button.setFont(finalFont);
+
         return button;
+    }
+
+    private void loadCustomFont(String fontPath) {
+        try {
+            TEXT_FONT = Font.createFont(Font.TRUETYPE_FONT, new File(fontPath));
+            FONT_NAME = TEXT_FONT.getFontName();
+            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            ge.registerFont(TEXT_FONT);
+            
+        } catch (IOException | FontFormatException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Font getFont() {
+        return TEXT_FONT;
     }
 
     private void loadAudio() {
