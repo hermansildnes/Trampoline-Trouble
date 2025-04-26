@@ -30,7 +30,7 @@ public abstract class Animatable extends Walker{
       ATTACK,
       DAMAGE
    }
-   // Map from direction facing to correspending array of animation sprites
+   // Map from direction facing to corresponding array of animation sprites
    private final Map<String, Map<AnimationState, BodyImage[]>> directionAnimations;
    private AnimationState currentState = AnimationState.NEUTRAL;
    private boolean isAnimating = false;

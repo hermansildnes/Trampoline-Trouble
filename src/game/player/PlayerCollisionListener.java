@@ -30,8 +30,7 @@ public class PlayerCollisionListener implements CollisionListener {
             }    
         }
 
-        if (e.getOtherBody() instanceof EnemyBullet) {
-            EnemyBullet bullet = (EnemyBullet) e.getOtherBody();
+        if (e.getOtherBody() instanceof EnemyBullet bullet) {
             player.getWorld().getWaveController().removeBullet(bullet);
             bullet.destroy();
             player.decreaseHealth(1);

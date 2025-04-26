@@ -14,8 +14,6 @@ public class BossEnemy extends Enemy {
     private float shootingTimer = SHOOTING_COOLDOWN;
     private boolean canShoot = false; // Start on cooldown
 
-    private String bulletSprite;
-
     public BossEnemy(Level world, Vec2 position) {
         super(world, new CircleShape(2f), position, "data/assets/enemy/bossenemy/");
         this.setHealth(health);    }
@@ -64,6 +62,7 @@ public class BossEnemy extends Enemy {
             enemyPos.y
         );
 
+        String bulletSprite;
         if (direction == 1) {
             bulletSprite = "data/assets/enemy/bossenemy/right/bullet.png";
         } else {

@@ -5,7 +5,7 @@ import city.cs.engine.CollisionListener;
 import game.environment.Ground;
 import game.player.Player;
 
-/*
+/**
  * Destroys enemy if it collides with the ground, and pauses
  * pathfinding for a second if it collides with the player
  */

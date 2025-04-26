@@ -1,0 +1,9 @@
+game
+game.enemy
+game.environment
+game.environment.collectibles
+game.GUI
+game.player
+game.player.equipments
+game.polygonEditor
+game.worlds

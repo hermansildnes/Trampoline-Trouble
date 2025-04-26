@@ -9,8 +9,8 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 
 
 public class AudioManager {    
-    private Map<String, SoundClip> musicTracks;
-    private Map<String, SoundClip> soundEffects;
+    private final Map<String, SoundClip> musicTracks;
+    private final Map<String, SoundClip> soundEffects;
     
     private String currentMusic;
     

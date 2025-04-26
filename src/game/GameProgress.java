@@ -31,9 +31,9 @@ public class GameProgress implements Serializable {
         
     }
 
-    public boolean updateLevelProgress(int levelNumber, float progress) {
+    public void updateLevelProgress(int levelNumber, float progress) {
         if (levelNumber < 1 || levelNumber > NUM_LEVELS) {
-            return false;
+            return;
         }
 
         if (progress > levelProgress[levelNumber - 1]) {
@@ -43,9 +43,7 @@ public class GameProgress implements Serializable {
                 levelUnlocked[levelNumber] = true;
             
             }
-            return true;    
         }
-        return false;
     }
 
     public void unlockAllLevels() {

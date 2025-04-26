@@ -21,8 +21,8 @@ public class EnemyController implements StepListener {
     private final ArrayList<Trampoline> trampolines;
     private Trampoline closestTrampoline;
 
-    private float movementSpeed = 4f;
-    private float smoothFactor = 0.25f;
+    private final float movementSpeed = 4f;
+    private final float smoothFactor = 0.25f;
     float targetVelocity;
 
         public EnemyController(Enemy enemy) {

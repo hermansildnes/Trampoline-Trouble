@@ -9,7 +9,7 @@ import city.cs.engine.Shape;
 import city.cs.engine.StaticBody;
 import game.worlds.Level;
 
-/*
+/**
  * Collectible class that specifies the existing collectible types and allows for creation of them
  */
 public class Collectible extends StaticBody{

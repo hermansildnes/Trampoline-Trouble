@@ -32,19 +32,25 @@ import game.Game;
 import game.GameProgress;
 import game.GameView;
 
+/** 
+ * Manages the game's UI, including menues, navigation between panels, fonts etc.
+ * Acts as the glue that connects the game logic, audio, progress, settings and more.
+ * @author Herman Sildnes
+ * @version 1.0.0
+ */
 public class MenuManager {
     // Constants
     private static final String GAME_PANEL = "Game";
-    private Color COSMIC_LATTE = new Color(255, 248, 231);
-    private Color TEXT_COLOR = new Color(0, 0, 0);
+    private final Color COSMIC_LATTE = new Color(255, 248, 231);
+    private final Color TEXT_COLOR = new Color(0, 0, 0);
     private Font TEXT_FONT;
     private String FONT_NAME;
     
     // UI components
     private Game game;
-    private JFrame frame;
-    private CardLayout cardLayout;
-    private JPanel cardPanel;
+    private final JFrame frame;
+    private final CardLayout cardLayout;
+    private final JPanel cardPanel;
     
     // Key binding related fields
     private JButton leftKeyButton;
@@ -59,18 +65,22 @@ public class MenuManager {
     private int downKey = KeyEvent.VK_S;
 
     // Audio related fields
-    private AudioManager audioManager;
+    private final AudioManager audioManager;
 
     // Menu navigation related fields
     private String currentPanel = "Main Menu";
     private String previousPanel = "Main Menu";
 
     // Progress related fields
-    private GameProgress gameProgress;
-    private JProgressBar[] levelProgressBars;
+    private final GameProgress gameProgress;
+    private final JProgressBar[] levelProgressBars;
     private JProgressBar gameOverProgressBar;
     private JProgressBar victoryProgressBar;
 
+    /** 
+     * Constructs the MenuManager, initialising the Frame containing all UI objects, 
+     * loading audio and fonts, setting up the UI panels, and displaying the main menu.
+     */
     public MenuManager() {
         frame = new JFrame("Trampoline Trouble");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -141,6 +151,10 @@ public class MenuManager {
         audioManager.playMusic("mainmenu");
     }
 
+    /** 
+     * Starts a new game by loading the specified level, starting the corresponding music and
+     * displaying the game panel.
+     */
     void startGame(int levelNumber) {
 
         if (!audioManager.isMusicPlaying("level" + levelNumber)) {
@@ -158,6 +172,8 @@ public class MenuManager {
         gameView.requestFocus();
     }
 
+    /** 
+     * Displays the main menu, starts the corresponding music and resets the game */
     public void returnToMenu() {
         audioManager.playMusic("mainmenu");
 
@@ -165,6 +181,10 @@ public class MenuManager {
         game = null;
     }
 
+    /** 
+     * Creates the main menu panel with Play, Settings, Load and Exit & Save buttons
+     * @return The fully configured main menu JPanel
+     */
     private JPanel createMainMenu() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -214,7 +234,12 @@ public class MenuManager {
         return panel;
     }
 
-        private JPanel createLevelSelectMenu() {
+    /** 
+     * Creates the Level Select panel with buttons for each level, showing the progress through that level
+     * and whether it is unlocked or not. Also adds a back button and a unlock all button.
+     * @return The fully configured level select JPanel
+     */
+    private JPanel createLevelSelectMenu() {
         // Use BorderLayout for overall structure
         JPanel mainPanel = new JPanel(new BorderLayout(10, 10)); // Gaps between components
         mainPanel.setBackground(COSMIC_LATTE);
@@ -293,6 +318,10 @@ public class MenuManager {
         return mainPanel;
     }
     
+    /** 
+     * Creates the pause menu panel with Resule, Settings and Exit & Save buttons
+     * @return The fully configured pause menu JPanel
+     */
     private JPanel createPauseMenu() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -333,6 +362,11 @@ public class MenuManager {
         return panel;
     }
 
+    /** 
+     * Creates the game over menu panel with Main Menu and Exit & Save buttons, in addition
+     * to a progress bar showing the progress through the level
+     * @return The fully configured game over menu JPanel
+     */ 
     private JPanel createGameOverMenu() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -400,6 +434,10 @@ public class MenuManager {
             
     }
 
+    /** 
+     * Creates the victory menu panel with next level and main menu buttons
+     * @return The fully configured victory menu JPanel
+     */
     private JPanel createVictoryMenu() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -474,6 +512,11 @@ public class MenuManager {
         return panel;
     }
 
+    /** 
+     * Creates the settings menu panel with a slider to adjust volume and buttons to change
+     * key bindings
+     * @return The fully configured settings menu JPanel
+     */
     private JPanel createSettingsMenu() {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -564,7 +607,12 @@ public class MenuManager {
         return panel;
     }
 
-    // Helper method to create a level panel with button and progress bar
+    /** 
+     * Helper method to create a panel for each level in the level select menu. 
+     * Includes the level button (locked or unlocked) and a progress bar 
+     * @param levelNumber The level number to create the panel for
+     * @return The fully configured level panel
+    */
     private JPanel createLevelPanel(int levelNumber) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
@@ -613,6 +661,14 @@ public class MenuManager {
         return panel;
     }
 
+    /** 
+     * Helper method to create a panel/row in the settings menu for each
+     * key binding. Includes a label for the action name and a button to 
+     * change/display the key binding
+     * @param actionName The name of the action (e.g. "Move Right")
+     * @param defaultKey The default key binding
+     * @return The fully configured key binding row JPanel
+     */
     private JPanel createKeybindingRow(String actionName, String defaultKey) {
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
@@ -622,15 +678,15 @@ public class MenuManager {
         
         // Action label
         JLabel label = new JLabel(actionName);
-        label.setFont(new Font(FONT_NAME, Font.PLAIN, 18));
+        label.setFont(new Font(FONT_NAME, Font.PLAIN, 16));
         label.setForeground(TEXT_COLOR);
         
         // Key button
         JButton keyButton = new JButton(defaultKey);
-        keyButton.setFont(new Font(FONT_NAME, Font.BOLD, 16));
+        keyButton.setFont(new Font(FONT_NAME, Font.BOLD, 12));
         keyButton.setFocusable(false);
         
-        Dimension buttonSize = new Dimension(100, 30);
+        Dimension buttonSize = new Dimension(200, 30);
         keyButton.setPreferredSize(buttonSize);
         keyButton.setMinimumSize(buttonSize);
         keyButton.setMaximumSize(buttonSize);
@@ -656,7 +712,13 @@ public class MenuManager {
         return panel;
     }
     
-
+    /** 
+     * Starts the process of capturing a new key bidning for a specified action.
+     * Sets the text on the button to "Press Key..." and requests focus for the frame
+     * to listen for key events.
+     * @param button The button to update with a new key binding
+     * @param actionName The name of the action to bind to the key (e.g. "Move Right")
+     */
     private void startKeyBindingCapture(JButton button, String actionName) {
         if (waitingForKeyInput) {
             // Cancel the previous capture if there was one
@@ -673,6 +735,12 @@ public class MenuManager {
     }
     
 
+    /** 
+     * Helper function to get the text representation of the key currently
+     * assigned to the action.
+     * @param actionName The name of the action (e.g. "Move Right")
+     * @return The text representation of the key (e.g. "A", "Right")
+     */
     private String getKeyTextForAction(String actionName) {
         if (actionName.equals("Move Left")) {
             return KeyEvent.getKeyText(leftKey);
@@ -684,6 +752,10 @@ public class MenuManager {
         return "";
     }
     
+    /** 
+     * Saves the keybindings by updating the game instance (if it exists) 
+     * 
+    */
     private void saveKeyBindings() {
         if (game != null) {
             // Notify the game of the new key bindings
@@ -691,6 +763,13 @@ public class MenuManager {
         }
     }
     
+    /** 
+     * Helper function to create a standardised large button.
+     * Dynamically sets the font size between 12-24 to ensure
+     * the texts fits the fixed button size.
+     * @param text The text to display on the button
+     * @return The fully configured JButton
+     */
     public JButton createLargeButton(String text) {
         JButton button = new JButton(text);
         button.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -721,6 +800,13 @@ public class MenuManager {
         return button;
     }
 
+    /** 
+     * Loads a custom font from a specified path and registers it with the GraphicsEnvironment.
+     * Sets the TEXT_FONT and FONT_NAME variables to the loaded font and its name.
+     * @param fontPath The path to the font file
+     * @throws IOException If the font file cannot be found or read
+     * @throws FontFormatException If the font file is not a valid font format
+     */
     private void loadCustomFont(String fontPath) {
         try {
             TEXT_FONT = Font.createFont(Font.TRUETYPE_FONT, new File(fontPath));
@@ -733,12 +819,18 @@ public class MenuManager {
         }
     }
 
+    /** 
+     * Gets the current Font object.
+     * @return The current Font object
+     */
     public Font getFont() {
         return TEXT_FONT;
     }
 
+    /** 
+     * Loads the required music and soundeffects into the AudioManager and assignes a name 
+    */
     private void loadAudio() {
-
         audioManager.loadMusic("mainmenu", "data/assets/music/mainmenu/soundtrack.wav");
 
         audioManager.loadMusic("level1", "data/assets/music/level1/soundtrack.wav");
@@ -753,6 +845,9 @@ public class MenuManager {
         audioManager.loadSoundEffect("victory", "data/assets/soundeffects/victory.wav");
     }
     
+    /** 
+     * Resumes the game by displaying the game panel and resuming the world via the Game instance 
+    */
     public void resumeGame() {
         cardLayout.show(cardPanel, GAME_PANEL);
         if (game != null) {
@@ -760,6 +855,11 @@ public class MenuManager {
         }
     }
 
+    /** 
+     * Displays the specified panel and updates the current and previous panel for navigation.
+     * 
+     * @param panelName The name of the panel to display
+    */
     public void showPanel(String panelName) {
         if (!currentPanel.equals(panelName)) {
             previousPanel = currentPanel;
@@ -783,6 +883,10 @@ public class MenuManager {
         cardLayout.show(cardPanel, panelName);
     }
 
+    /** 
+     * Shows the game over panel and updates the progress for the current level.
+     * @param progress The progress through the current level (0.0 to 1.0)
+    */
     public void showGameOverPanel(float progress) {
         if (game != null) {
             gameProgress.updateLevelProgress(game.getCurrentLevel(), progress);
@@ -796,6 +900,9 @@ public class MenuManager {
 
     }
 
+    /**
+     * Shows the victory panel and updates the progress for the current level to 1.0
+     */
     public void showVictoryPanel() {
         if (game != null) {
             gameProgress.updateLevelProgress(game.getCurrentLevel(), 1.0f);

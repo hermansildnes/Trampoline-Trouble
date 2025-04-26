@@ -11,9 +11,8 @@ import game.worlds.Level;
 public class EnemyBullet extends DynamicBody {
     private static final float BULLET_SIZE = 0.3f;
     private static final float BULLET_SPEED = 25.0f;
-    private static float BULLET_MAX_LIFETIME = 3.0f;
     private float lifetime = 0;
-    private int direction;
+    private final int direction;
 
 
     public EnemyBullet(Level world, Vec2 position, int direction, Shape shape, String spritePath, float spriteSize) {
@@ -46,6 +45,7 @@ public class EnemyBullet extends DynamicBody {
 
     public boolean update(float deltaTime) {
         lifetime += deltaTime;
+        float BULLET_MAX_LIFETIME = 3.0f;
         if (lifetime >= BULLET_MAX_LIFETIME) {
             return true;
         }

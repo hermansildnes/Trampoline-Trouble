@@ -11,17 +11,12 @@ public enum EnemyType {
     BOSS;
 
     public Enemy create(Level level, Vec2 position) {
-        switch (this) {
-            case BASE:
-                return new BaseEnemy(level, position);
-            case FAST:
-                return new FastEnemy(level, position);
-            case SHOOTING:
-                return new ShootingEnemy(level, position);
-            case BOSS:
-                return new BossEnemy(level, position);
-            default:
-                return new BaseEnemy(level, position);
-        }
+        return switch (this) {
+            case BASE -> new BaseEnemy(level, position);
+            case FAST -> new FastEnemy(level, position);
+            case SHOOTING -> new ShootingEnemy(level, position);
+            case BOSS -> new BossEnemy(level, position);
+            default -> new BaseEnemy(level, position);
+        };
     }
 }

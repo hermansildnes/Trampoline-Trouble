@@ -72,7 +72,7 @@ public abstract class Enemy extends Animatable {
 
         this.healthbars = new ArrayList<>();
         StaticBody primaryBar = new StaticBody(world);
-        this.healthbars.add(primaryBar);        
+        this.healthbars.add(primaryBar);
     }
 
     public Enemy(Level world, Vec2 position, String spritePath) {
@@ -162,14 +162,14 @@ public abstract class Enemy extends Animatable {
         // Add new bars at the bottom if needed
         while (healthbars.size() < numberOfBars) {
             StaticBody newBar = new StaticBody(getWorld());
-            healthbars.add(0, newBar); // Add at the top (index 0)
+            healthbars.addFirst(newBar); // Add at the top (index 0)
         }
     
         // Remove excess bars from the top (index 0) if needed
         // Fix: Change this to remove from index 0 (top) until we have the right number
         while (healthbars.size() > numberOfBars) {
             // Remove from index 0 (top bar)
-            StaticBody bar = healthbars.remove(0);
+            StaticBody bar = healthbars.removeFirst();
             bar.destroy();
         }
     
@@ -208,7 +208,7 @@ public abstract class Enemy extends Animatable {
         if (healthbars.isEmpty()) {
             return null;
         }
-        return healthbars.get(healthbars.size() - 1);
+        return healthbars.getLast();
     }
 
     public ArrayList<StaticBody> getHealthbars() {
