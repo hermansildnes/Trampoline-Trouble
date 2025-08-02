@@ -49,11 +49,11 @@ java -cp src game.Game
 - `data/assets/`: Game assets (sprites, images)
 
 ## <u>Planned features</u>
-- [ ] Level progression - Defeat all waves in the current level to progress to the next
-- [ ] UI - Play/pause, See finished levels, 
-- [ ] Sounds - Bounce, music, damage etc.
-- [ ] Additional Collectibles
-- [ ] Polished animations
+- [x] Level progression - Defeat all waves in the current level to progress to the next
+- [x] UI - Play/pause, See finished levels, 
+- [x] Sounds - Bounce, music, damage etc.
+- [x] Additional Collectibles
+- [x] Polished animations
 
 
 ## <u>Credits</u>
