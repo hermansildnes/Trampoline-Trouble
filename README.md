@@ -60,3 +60,16 @@ java -cp src game.Game
 - Player sprites: Graphics created by Penzilla Design
 - Background image: Graphics by vnitti (https://vnitti.itch.io/glacial-mountains-parallax-background)
 - Enemy sprites: CC BY 4.0 (https://lucky-loops.itch.io/character-satyr)
+- Level 1 background image: https://szadiart.itch.io/background-desert-mountains
+- Level 2 background image: [Graphics by vnitti](https://vnitti.itch.io/glacial-mountains-parallax-background)
+- Level 3 and 4 background image: https://ansimuz.itch.io/mountain-dusk-parallax-background
+- Base enemy sprites: CC BY 4.0 https://lucky-loops.itch.io/character-satyr
+- Fast enemy sprites: https://ome6a1717.itch.io/simple-enemies-bat
+- Shooting enemy sprites: CC0 https://luizmelo.itch.io/huntress-2
+- Boss enemy sprites: https://xzany.itch.io/flying-demon-2d-pixel-art
+- Music:  https://www.FesliyanStudios.c
+- Collect sound effect by Driken Stan from Pixabay
+- Bounce sound effect by SmartSound FX from Uppbeat.io
+- Damage sound effect by Gamemaster Audio from Uppbeat.io
+- Shooting sound effect by Driken5482 from Pixabay
+- Victory sound effect by LIECIO from Pixabay
