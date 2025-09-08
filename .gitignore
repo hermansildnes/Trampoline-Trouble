@@ -25,3 +25,25 @@ replay_pid*
 
 .vscode/
 saves/
+# Javadoc and documentation files
+*.html
+*.js
+*.css
+*.svg
+element-list
+index-files/
+game/
+help-doc.html
+member-search-index.js
+module-search-index.js
+overview-summary.html
+overview-tree.html
+package-search-index.js
+script.js
+search-page.js
+search.html
+search.js
+serialized-form.html
+stylesheet.css
+tag-search-index.js
+type-search-index.js
